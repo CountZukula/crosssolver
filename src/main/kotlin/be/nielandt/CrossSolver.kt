@@ -127,6 +127,13 @@ fun allCrossMoveCountUpgraded(edgeModel: EdgeModel): Map<Color, List<Move>> {
     return moveCounts
 }
 
+/**
+ * This thing helps us to create edgemodels using a counter. The advantage is that the edgemodel doesn't need to be calculated
+ * completely from scratch: previous states are kept, so if, e.g., the third digit changes in the counter (of length 5),
+ * the previous state that was calculated using the first two states is used to perform move 3,4,5 on.
+ *
+ * This is probably equivalent to 8 nested for loops, you'd be able to keep track of temporary solutions there too....
+ */
 class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
     // keep a modified version of the edgemodel for each digit in the counter, from left to right
     private val history: MutableList<EdgeModel> = mutableListOf()
