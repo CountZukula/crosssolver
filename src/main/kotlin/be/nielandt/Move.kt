@@ -49,4 +49,11 @@ enum class Move {
         return this.toString().substring(0, 1) != otherMove.toString().substring(0, 1)
     }
 
+    /**
+     * Are both moves on the same face? Would be true for F2 and F_, for example.
+     */
+    infix fun sameFace(otherMove: Move): Boolean {
+        return !otherFace(otherMove)
+    }
+
 }
