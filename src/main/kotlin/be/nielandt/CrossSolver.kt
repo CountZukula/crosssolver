@@ -4,12 +4,8 @@ import java.time.Duration
 import java.time.Instant
 
 /**
- * Convert the color into a single digit for print purposes.
+ * Let's look for symmetries.
  */
-fun l(c: Color): String {
-    return c.name.first().toString()
-}
-
 fun main(args: Array<String>) {
 
 //    val u2 = Move.U2
@@ -52,8 +48,15 @@ fun main(args: Array<String>) {
     allCrossMoveCount.forEach { color, moves ->
         println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
     }
+    val allCrossMoveCountUpgraded = allCrossMoveCountUpgraded(scrambledModel)
+    allCrossMoveCount.forEach { color, moves ->
+        println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
+    }
 }
 
+/**
+ * Do the color solves separately. Not very efficient, this rehashes a lot of things.
+ */
 fun doAllCrossMoveCounts(edgeModel: EdgeModel) {
     for (c: Color in Color.values()) {
         val crossMoveCount = crossMoveCount(edgeModel, c)
@@ -88,6 +91,86 @@ fun crossMoveCount(edgeModel: EdgeModel, color: Color): List<Move>? {
 }
 
 /**
+ * Solve the minimal cross for all colors. Try to upgrade the method... Can we cache the 'previous results'?
+ */
+fun allCrossMoveCountUpgraded(edgeModel: EdgeModel): Map<Color, List<Move>> {
+    val start = Instant.now()
+    val moveCounts = mutableMapOf<Color, List<Move>>()
+
+    for (moveCount in 1..8) {
+        println("all cross move count upgrade doing $moveCount")
+        // build a counter of moveCount big
+        val counter = Counter(moveCount, Move.values().size)
+        val edgeModelFactory = EdgeModelFactory(edgeModel, counter)
+
+        while (edgeModelFactory.hasNext()) {
+            val next = edgeModelFactory.getNext()
+            // check crosses that have not been found yet
+            Color.values().forEach { color ->
+                if (!moveCounts.containsKey(color)) {
+                    val crossSolved = next.crossSolved(color)
+                    if (crossSolved) {
+                        // what is the move combination we're looking at?
+                        val moves = Move.combo(counter)
+                        moveCounts[color] = moves
+                    }
+                }
+            }
+            // break if we have found hem all
+            if (moveCounts.keys.size == Color.values().size) {
+                println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
+                return moveCounts
+            }
+        }
+    }
+    println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
+    return moveCounts
+}
+
+class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
+    // keep a modified version of the edgemodel for each digit in the counter, from left to right
+    private val history: MutableList<EdgeModel> = mutableListOf()
+
+    // we always have one in the beginning: the initial state of the counter
+    private var hasNext: Boolean = true
+
+    init {
+        // init the history
+        this.history.add(original.doMove(Move.values()[counter.digit(0)]))
+        for (i in 1 until counter.size()) {
+            this.history.add(this.history.last().doMove(Move.values()[counter.digit(i)]))
+        }
+    }
+
+    fun hasNext(): Boolean {
+        return hasNext
+    }
+
+    fun getNext(): EdgeModel {
+        // the counter was increased, hooray
+        val lastOverflowIndex = counter.getLastModifiedIndex()
+        // we only need to redo everything starting from the lastoverflowindex
+        // these are our moves, but we can salvage everything up to lastoverflowindex
+        val moves = Move.combo(counter)
+        // we have a history to work with... only redo what's necessary
+        for (i in counter.getLastModifiedIndex() until counter.size()) {
+            var start: EdgeModel? = null
+            start = if (i == 0)
+                original
+            else
+                history[i - 1]
+            history[i] = start.doMove(Move.values()[counter.digit(i)])
+        }
+        // increase the counter for next time
+        if (!counter.increase()) {
+            this.hasNext = false
+        }
+        // the last item in the history is now the edgemodel we need to test...
+        return history.last()
+    }
+}
+
+/**
  * Solve the minimal cross for all colors.
  */
 fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
@@ -105,13 +188,13 @@ fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
             // execute the moves
             val afterMoves = edgeModel.doMoves(moves)
             // check crosses that have not been found yet
-            Color.values().forEach {  color ->
-               if(!moveCounts.containsKey(color)) {
-                   val crossSolved = afterMoves.crossSolved(color)
-                   if (crossSolved) {
-                       moveCounts[color] = moves
-                   }
-               }
+            Color.values().forEach { color ->
+                if (!moveCounts.containsKey(color)) {
+                    val crossSolved = afterMoves.crossSolved(color)
+                    if (crossSolved) {
+                        moveCounts[color] = moves
+                    }
+                }
             }
 
             if (moveCounts.keys.size == Color.values().size) {
@@ -125,3 +208,9 @@ fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
     return moveCounts
 }
 
+/**
+ * Convert the color into a single digit for print purposes.
+ */
+fun l(c: Color): String {
+    return c.name.first().toString()
+}

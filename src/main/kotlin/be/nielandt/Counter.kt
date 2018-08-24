@@ -11,6 +11,16 @@ class Counter(size: Int, val base: Int = 10) {
     private var counter: Array<Int> = Array(size) { 0 }
 
     /**
+     *  The last (highest significance) index that overflowed and has been changed in the counter. Could be null, if it never overflowed.
+     *  Start with saying that everything changed.
+     */
+    private var lastModifiedIndex: Int = 0
+
+    fun getLastModifiedIndex(): Int {
+        return this.lastModifiedIndex
+    }
+
+    /**
      * Increase the counter.
      *
      * @return true if the increase happened, false if we hit the ceiling.
@@ -21,10 +31,13 @@ class Counter(size: Int, val base: Int = 10) {
         }
         for (i in this.counter.size - 1 downTo 0) {
             this.counter[i]++
-            if (this.counter[i] == base)
+            this.lastModifiedIndex = i
+            if (this.counter[i] == base) {
                 this.counter[i] = 0
-            else
+            } else {
+                // keep track of the digit index we're breaking on.
                 break
+            }
         }
         return true
     }

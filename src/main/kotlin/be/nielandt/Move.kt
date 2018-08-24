@@ -31,6 +31,7 @@ enum class Move {
 
         /**
          * Use the given counter, which contains digits that correspond with the amount of Moves, to generate a list of Moves.
+         * Highest significant digits of the counter are added first (are first in the result list).
          */
         fun combo(counter: Counter): List<Move> {
             val res = mutableListOf<Move>()
