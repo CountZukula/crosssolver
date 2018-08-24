@@ -44,18 +44,12 @@ enum class Move {
 }
 
 /**
- * Six colors
+ * Convert a color into a letter.
  */
-const val WHITE: Short = 0
-const val YELLOW: Short = 1
-const val ORANGE: Short = 2
-const val RED: Short = 3
-const val GREEN: Short = 4
-const val BLUE: Short = 5
 val COLOR_LETTER = arrayOf("W", "Y", "O", "R", "G", "B")
 
-fun l(colorIndex: Short): String {
-    return COLOR_LETTER[colorIndex.toInt()]
+fun l(c: Color): String {
+    return c.name.first().toString()
 }
 
 fun main(args: Array<String>) {
@@ -97,33 +91,19 @@ fun main(args: Array<String>) {
 
 //    doAllCrossMoveCounts(scrambledModel)
     val allCrossMoveCount = allCrossMoveCount(scrambledModel)
-    allCrossMoveCount.forEachIndexed { index, list ->
-        println("cross for color: ${colorName(index.toShort())} in ${list?.size}: ${list?.joinToString(" ")}")
-    }
-}
-
-fun colorName(color: Short): String {
-    return when (color) {
-        WHITE -> "white"
-        YELLOW -> "yellow"
-        RED -> "red"
-        BLUE -> "blue"
-        GREEN -> "green"
-        ORANGE -> "orange"
-        else -> {
-            "?"
-        }
+    allCrossMoveCount.forEach { color, moves ->
+        println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
     }
 }
 
 fun doAllCrossMoveCounts(edgeModel: EdgeModel) {
-    for (i in 0 until 6) {
-        val crossMoveCount = crossMoveCount(edgeModel, i.toShort())
-        println("${colorName(i.toShort())} in ${crossMoveCount?.size}: ${crossMoveCount?.joinToString()}")
+    for (c: Color in Color.values()) {
+        val crossMoveCount = crossMoveCount(edgeModel, c)
+        println("${c} in ${crossMoveCount?.size}: ${crossMoveCount?.joinToString()}")
     }
 }
 
-fun crossMoveCount(edgeModel: EdgeModel, color: Short): List<Move>? {
+fun crossMoveCount(edgeModel: EdgeModel, color: Color): List<Move>? {
     val moveCounts = Array<List<Move>?>(6) { null }
 
     for (moveCount in 1..8) {
@@ -146,9 +126,9 @@ fun crossMoveCount(edgeModel: EdgeModel, color: Short): List<Move>? {
     return null
 }
 
-fun allCrossMoveCount(edgeModel: EdgeModel): Array<List<Move>?> {
+fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
     val start = Instant.now()
-    val moveCounts = Array<List<Move>?>(6) { null }
+    val moveCounts = mutableMapOf<Color, List<Move>>()
 
     for (moveCount in 1..8) {
         // build a counter of moveCount big
@@ -161,23 +141,23 @@ fun allCrossMoveCount(edgeModel: EdgeModel): Array<List<Move>?> {
             // execute the moves
             val afterMoves = edgeModel.doMoves(moves)
             // check crosses that have not been found yet
-            moveCounts.forEachIndexed { index, list ->
-                if (list == null) {
-                    val crossSolved = afterMoves.crossSolved(index.toShort())
-                    if (crossSolved) {
-                        moveCounts[index] = moves
-                    }
-                }
+            Color.values().forEach {  color ->
+               if(!moveCounts.containsKey(color)) {
+                   val crossSolved = afterMoves.crossSolved(color)
+                   if (crossSolved) {
+                       moveCounts[color] = moves
+                   }
+               }
             }
 
-            if (moveCounts.all { it != null }) {
-                println("Execution time: ${Duration.between(start, Instant.now()).toSeconds()}s")
+            if (moveCounts.keys.size == Color.values().size) {
+                println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
                 return@allCrossMoveCount moveCounts
             }
 
         } while (counter.increase())
     }
-    println("Execution time: ${Duration.between(start, Instant.now()).toSeconds()}s")
+    println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
     return moveCounts
 }
 

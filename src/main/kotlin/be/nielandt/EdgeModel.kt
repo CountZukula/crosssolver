@@ -1,5 +1,6 @@
 package be.nielandt
 
+
 /**
  * 24 edge-faces (a single part of an edge), so 24 pieces that can have a color
 -         ----------
@@ -25,7 +26,7 @@ package be.nielandt
 
 class EdgeModel {
 
-    val model: ShortArray
+    val model: Array<Color>
 
     private val F = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
     private val B = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
@@ -44,13 +45,14 @@ class EdgeModel {
             throw RuntimeException("each index should occur exactly twice in the arrays")
         }
 
-        model = shortArrayOf(
-                GREEN, GREEN, GREEN, GREEN,
-                RED, RED, RED, RED,
-                BLUE, BLUE, BLUE, BLUE,
-                ORANGE, ORANGE, ORANGE, ORANGE,
-                WHITE, WHITE, WHITE, WHITE,
-                YELLOW, YELLOW, YELLOW, YELLOW)
+        model = arrayOf(
+                Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
+                Color.RED, Color.RED, Color.RED, Color.RED,
+                Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
+                Color.ORANGE, Color.ORANGE, Color.ORANGE, Color.ORANGE,
+                Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
+                Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW
+        )
     }
 
     constructor(randomMoves: Int) {
@@ -59,7 +61,7 @@ class EdgeModel {
         this.model = doMoves.model
     }
 
-    constructor(model: ShortArray) {
+    constructor(model: Array<Color>) {
         this.model = model
     }
 
@@ -180,66 +182,33 @@ class EdgeModel {
         return this.doMoves(f.toList())
     }
 
-    fun crossSolved(color: Short): Boolean {
-        return when(color) {
-            WHITE -> {
-                model[WB] == WHITE && model[WG] == WHITE && model[WO] == WHITE && model[WR] == WHITE &&
-                        model[BW] == BLUE && model[GW] == GREEN && model[OW] == ORANGE && model[RW] == RED
+    fun crossSolved(color: Color): Boolean {
+        return when (color) {
+            Color.WHITE -> {
+                model[WB] == Color.WHITE && model[WG] == Color.WHITE && model[WO] == Color.WHITE && model[WR] == Color.WHITE &&
+                        model[BW] == Color.BLUE && model[GW] == Color.GREEN && model[OW] == Color.ORANGE && model[RW] == Color.RED
             }
-            YELLOW -> {
-                model[YB] == YELLOW && model[YG] == YELLOW && model[YO] == YELLOW && model[YR] == YELLOW &&
-                        model[BY] == BLUE && model[GY] == GREEN && model[OY] == ORANGE && model[RY] == RED
+            Color.YELLOW -> {
+                model[YB] == Color.YELLOW && model[YG] == Color.YELLOW && model[YO] == Color.YELLOW && model[YR] == Color.YELLOW &&
+                        model[BY] == Color.BLUE && model[GY] == Color.GREEN && model[OY] == Color.ORANGE && model[RY] == Color.RED
             }
-            RED -> {
-                model[RW] == RED && model[RG] == RED && model[RY] == RED && model[RB] == RED &&
-                        model[WR] == WHITE && model[GR] == GREEN && model[YR] == YELLOW && model[BR] == BLUE
+            Color.RED -> {
+                model[RW] == Color.RED && model[RG] == Color.RED && model[RY] == Color.RED && model[RB] == Color.RED &&
+                        model[WR] == Color.WHITE && model[GR] == Color.GREEN && model[YR] == Color.YELLOW && model[BR] == Color.BLUE
             }
-            BLUE -> {
-                model[BW] == BLUE && model[BR] == BLUE && model[BY] == BLUE && model[BO] == BLUE &&
-                        model[WB] == WHITE && model[RB] == RED && model[YB] == YELLOW && model[OB] == ORANGE
+            Color.BLUE -> {
+                model[BW] == Color.BLUE && model[BR] == Color.BLUE && model[BY] == Color.BLUE && model[BO] == Color.BLUE &&
+                        model[WB] == Color.WHITE && model[RB] == Color.RED && model[YB] == Color.YELLOW && model[OB] == Color.ORANGE
             }
-            GREEN -> {
-                model[GW] == GREEN && model[GO] == GREEN && model[GY] == GREEN && model[GR] == GREEN &&
-                        model[WG] == WHITE && model[OG] == ORANGE && model[YG] == YELLOW && model[RG] == RED
+            Color.GREEN -> {
+                model[GW] == Color.GREEN && model[GO] == Color.GREEN && model[GY] == Color.GREEN && model[GR] == Color.GREEN &&
+                        model[WG] == Color.WHITE && model[OG] == Color.ORANGE && model[YG] == Color.YELLOW && model[RG] == Color.RED
             }
-            ORANGE -> {
-                model[OW] == ORANGE && model[OB] == ORANGE && model[OY] == ORANGE && model[OG] == ORANGE &&
-                        model[WO] == WHITE && model[BO] == BLUE && model[YO] == YELLOW && model[GO] == GREEN
-            }
-            else -> {
-                throw IllegalStateException("6 color for lyfe!")
+            Color.ORANGE -> {
+                model[OW] == Color.ORANGE && model[OB] == Color.ORANGE && model[OY] == Color.ORANGE && model[OG] == Color.ORANGE &&
+                        model[WO] == Color.WHITE && model[BO] == Color.BLUE && model[YO] == Color.YELLOW && model[GO] == Color.GREEN
             }
         }
     }
 }
 
-// sticker index constants for edges
-const val GO = 3
-const val GW = 0
-const val GR = 1
-const val GY = 2
-
-const val WG = 18
-const val WO = 19
-const val WB = 16
-const val WR = 17
-
-const val YG = 20
-const val YO = 23
-const val YB = 22
-const val YR = 21
-
-const val RG = 7
-const val RW = 4
-const val RB = 5
-const val RY = 6
-
-const val BR = 11
-const val BW = 8
-const val BO = 9
-const val BY = 10
-
-const val OB = 15
-const val OW = 12
-const val OG = 13
-const val OY = 14
