@@ -2,56 +2,6 @@ package be.nielandt
 
 import java.time.Duration
 import java.time.Instant
-import java.util.*
-
-/**
- * All the possible moves on the cube.
- */
-enum class Move {
-    F, F_, F2, B, B_, B2, L, L_, L2, R, R_, R2, U, U_, U2, D, D_, D2;
-
-    /**
-     * Static methods for the Move object.
-     */
-    companion object {
-        /**
-         * Make a random set of moves that makes sense.
-         */
-        fun random(amount: Int): List<Move> {
-            val rgen = Random()
-            val result = mutableListOf<Move>()
-            while (result.size < amount) {
-                val randomMove = Move.values()[rgen.nextInt(Move.values().size)]
-                // check if it makes sense?
-                if (result.isNotEmpty() && result.last() otherFace randomMove)
-                    result.add(randomMove)
-                else if (result.isEmpty())
-                    result.add(randomMove)
-            }
-            return result
-        }
-
-        /**
-         * Use the given counter, which contains digits that correspond with the amount of Moves, to generate a list of Moves.
-         */
-        fun combo(counter: Counter): List<Move> {
-            val res = mutableListOf<Move>()
-            for (i in 0 until counter.size()) {
-                res.add(Move.values()[counter.digit(i)])
-            }
-            return res
-        }
-    }
-
-    /**
-     * Use this as `Move otherFace Move`, a quick way to check if the moves manipulate the same face or not.
-     * Example: `Move.F otherFace Move.U_ == false`
-     */
-    infix fun otherFace(otherMove: Move): Boolean {
-        return this.toString().substring(0, 1) != otherMove.toString().substring(0, 1)
-    }
-
-}
 
 /**
  * Convert the color into a single digit for print purposes.
@@ -111,6 +61,9 @@ fun doAllCrossMoveCounts(edgeModel: EdgeModel) {
     }
 }
 
+/**
+ * For a single color, go 8 deep and try and find the minimal amount of moves to solve that cross.
+ */
 fun crossMoveCount(edgeModel: EdgeModel, color: Color): List<Move>? {
     val moveCounts = Array<List<Move>?>(6) { null }
 
@@ -134,6 +87,9 @@ fun crossMoveCount(edgeModel: EdgeModel, color: Color): List<Move>? {
     return null
 }
 
+/**
+ * Solve the minimal cross for all colors.
+ */
 fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
     val start = Instant.now()
     val moveCounts = mutableMapOf<Color, List<Move>>()
@@ -167,44 +123,5 @@ fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
     }
     println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
     return moveCounts
-}
-
-/**
- * Counter for X digits of a given base.
- */
-class Counter(size: Int, val base: Int = 10) {
-
-    // start the counter at [0,0,...0]
-    private var counter: Array<Int> = Array(size) { 0 }
-
-    fun increase(): Boolean {
-        if (atMax()) {
-            return false
-        }
-        for (i in this.counter.size - 1 downTo 0) {
-            this.counter[i]++
-            if (this.counter[i] == base)
-                this.counter[i] = 0
-            else
-                break
-        }
-        return true
-    }
-
-    fun size(): Int {
-        return this.counter.size
-    }
-
-    fun digit(index: Int): Int {
-        return counter[index]
-    }
-
-    override fun toString(): String = this.counter.joinToString(".")
-
-    fun atMax(): Boolean {
-        return counter.all {
-            it == this.base - 1
-        }
-    }
 }
 
