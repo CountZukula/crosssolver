@@ -1,5 +1,7 @@
 package be.nielandt
 
+import java.time.Duration
+import java.time.Instant
 import java.util.*
 
 /**
@@ -93,7 +95,11 @@ fun main(args: Array<String>) {
     val scrambledModel = EdgeModel(moves)
     println(scrambledModel)
 
-    doAllCrossMoveCounts(scrambledModel)
+//    doAllCrossMoveCounts(scrambledModel)
+    val allCrossMoveCount = allCrossMoveCount(scrambledModel)
+    allCrossMoveCount.forEachIndexed { index, list ->
+        println("cross for color: ${colorName(index.toShort())} in ${list?.size}: ${list?.joinToString(" ")}")
+    }
 }
 
 fun colorName(color: Short): String {
@@ -111,7 +117,7 @@ fun colorName(color: Short): String {
 }
 
 fun doAllCrossMoveCounts(edgeModel: EdgeModel) {
-    for(i in 0 until 6) {
+    for (i in 0 until 6) {
         val crossMoveCount = crossMoveCount(edgeModel, i.toShort())
         println("${colorName(i.toShort())} in ${crossMoveCount?.size}: ${crossMoveCount?.joinToString()}")
     }
@@ -138,6 +144,41 @@ fun crossMoveCount(edgeModel: EdgeModel, color: Short): List<Move>? {
         } while (counter.increase())
     }
     return null
+}
+
+fun allCrossMoveCount(edgeModel: EdgeModel): Array<List<Move>?> {
+    val start = Instant.now()
+    val moveCounts = Array<List<Move>?>(6) { null }
+
+    for (moveCount in 1..8) {
+        // build a counter of moveCount big
+        val counter = Counter(moveCount, Move.values().size)
+
+        // count up, each state of the counter corresponds to a combination of moves
+        do {
+            // what is the move combination we're looking at?
+            val moves = Move.combo(counter)
+            // execute the moves
+            val afterMoves = edgeModel.doMoves(moves)
+            // check crosses that have not been found yet
+            moveCounts.forEachIndexed { index, list ->
+                if (list == null) {
+                    val crossSolved = afterMoves.crossSolved(index.toShort())
+                    if (crossSolved) {
+                        moveCounts[index] = moves
+                    }
+                }
+            }
+
+            if (moveCounts.all { it != null }) {
+                println("Execution time: ${Duration.between(start, Instant.now()).toSeconds()}s")
+                return@allCrossMoveCount moveCounts
+            }
+
+        } while (counter.increase())
+    }
+    println("Execution time: ${Duration.between(start, Instant.now()).toSeconds()}s")
+    return moveCounts
 }
 
 /**
