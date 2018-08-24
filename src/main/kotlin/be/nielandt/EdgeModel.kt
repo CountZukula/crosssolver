@@ -180,9 +180,36 @@ class EdgeModel {
         return this.doMoves(f.toList())
     }
 
-    fun whiteCrossSolved(): Boolean {
-        return model[WB] == WHITE && model[WG] == WHITE && model[WO] == WHITE && model[WR] == WHITE &&
-                model[GW] == GREEN && model[OW] == ORANGE && model[RW] == RED && model[BW] == BLUE
+    fun crossSolved(color: Short): Boolean {
+        return when(color) {
+            WHITE -> {
+                model[WB] == WHITE && model[WG] == WHITE && model[WO] == WHITE && model[WR] == WHITE &&
+                        model[BW] == BLUE && model[GW] == GREEN && model[OW] == ORANGE && model[RW] == RED
+            }
+            YELLOW -> {
+                model[YB] == YELLOW && model[YG] == YELLOW && model[YO] == YELLOW && model[YR] == YELLOW &&
+                        model[BY] == BLUE && model[GY] == GREEN && model[OY] == ORANGE && model[RY] == RED
+            }
+            RED -> {
+                model[RW] == RED && model[RG] == RED && model[RY] == RED && model[RB] == RED &&
+                        model[WR] == WHITE && model[GR] == GREEN && model[YR] == YELLOW && model[BR] == BLUE
+            }
+            BLUE -> {
+                model[BW] == BLUE && model[BR] == BLUE && model[BY] == BLUE && model[BO] == BLUE &&
+                        model[WB] == WHITE && model[RB] == RED && model[YB] == YELLOW && model[OB] == ORANGE
+            }
+            GREEN -> {
+                model[GW] == GREEN && model[GO] == GREEN && model[GY] == GREEN && model[GR] == GREEN &&
+                        model[WG] == WHITE && model[OG] == ORANGE && model[YG] == YELLOW && model[RG] == RED
+            }
+            ORANGE -> {
+                model[OW] == ORANGE && model[OB] == ORANGE && model[OY] == ORANGE && model[OG] == ORANGE &&
+                        model[WO] == WHITE && model[BO] == BLUE && model[YO] == YELLOW && model[GO] == GREEN
+            }
+            else -> {
+                throw IllegalStateException("6 color for lyfe!")
+            }
+        }
     }
 }
 

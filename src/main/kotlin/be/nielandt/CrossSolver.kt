@@ -9,11 +9,19 @@ enum class Move {
     F, F_, F2, B, B_, B2, L, L_, L2, R, R_, R2, U, U_, U2, D, D_, D2;
 
     companion object {
+        /**
+         * Make a random set of moves that makes sense.
+         */
         fun random(amount: Int): List<Move> {
             val rgen = Random()
             val result = mutableListOf<Move>()
-            for (i in 0 until amount) {
-                result.add(Move.values()[rgen.nextInt(Move.values().size)])
+            while (result.size < amount) {
+                val randomMove = Move.values()[rgen.nextInt(Move.values().size)]
+                // check if it makes sense?
+                if (result.isNotEmpty() && result.last() otherFace randomMove)
+                    result.add(randomMove)
+                else if (result.isEmpty())
+                    result.add(randomMove)
             }
             return result
         }
@@ -26,6 +34,11 @@ enum class Move {
             return res
         }
     }
+
+    infix fun otherFace(otherMove: Move): Boolean {
+        return this.toString().substring(0, 1) != otherMove.toString().substring(0, 1)
+    }
+
 }
 
 /**
@@ -44,9 +57,6 @@ fun l(colorIndex: Short): String {
 }
 
 fun main(args: Array<String>) {
-    val edgeModel = EdgeModel()
-//    println(edgeModel)
-//    println("edgeModel.whiteCrossSolved() = ${edgeModel.whiteCrossSolved()}")
 
 //    val u2 = Move.U2
 //    val doMove = edgeModel.doMove(Move.U2)
@@ -78,16 +88,38 @@ fun main(args: Array<String>) {
 
 
     // make a beginning model, then start doing crazy shit
-    val moves = Move.random(15)
+    val moves = Move.random(20)
     println("Scramble: $moves")
     val scrambledModel = EdgeModel(moves)
     println(scrambledModel)
 
-    val whiteCrossMoveCount = whiteCrossMoveCount(scrambledModel)
-    println("whiteCrossMoveCount: $whiteCrossMoveCount")
+    doAllCrossMoveCounts(scrambledModel)
 }
 
-fun whiteCrossMoveCount(edgeModel: EdgeModel): Int {
+fun colorName(color: Short): String {
+    return when (color) {
+        WHITE -> "white"
+        YELLOW -> "yellow"
+        RED -> "red"
+        BLUE -> "blue"
+        GREEN -> "green"
+        ORANGE -> "orange"
+        else -> {
+            "?"
+        }
+    }
+}
+
+fun doAllCrossMoveCounts(edgeModel: EdgeModel) {
+    for(i in 0 until 6) {
+        val crossMoveCount = crossMoveCount(edgeModel, i.toShort())
+        println("${colorName(i.toShort())} in ${crossMoveCount?.size}: ${crossMoveCount?.joinToString()}")
+    }
+}
+
+fun crossMoveCount(edgeModel: EdgeModel, color: Short): List<Move>? {
+    val moveCounts = Array<List<Move>?>(6) { null }
+
     for (moveCount in 1..8) {
         // build a counter of moveCount big
         val counter = Counter(moveCount, Move.values().size)
@@ -98,15 +130,14 @@ fun whiteCrossMoveCount(edgeModel: EdgeModel): Int {
             val moves = Move.combo(counter)
             // execute the moves
             val afterMoves = edgeModel.doMoves(moves)
-            // check whitecross!
-            if(afterMoves.whiteCrossSolved()) {
-                println("White cross found!")
-                println("moves = $moves")
-                return@whiteCrossMoveCount moveCount
+            val crossSolved = afterMoves.crossSolved(color)
+            if (crossSolved) {
+                return@crossMoveCount moves
             }
+
         } while (counter.increase())
     }
-    return Int.MAX_VALUE
+    return null
 }
 
 /**
