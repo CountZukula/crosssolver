@@ -17,6 +17,14 @@ enum class Move {
             }
             return result
         }
+
+        fun combo(counter: Counter): List<Move> {
+            val res = mutableListOf<Move>()
+            for (i in 0 until counter.size()) {
+                res.add(Move.values()[counter.digit(i)])
+            }
+            return res
+        }
     }
 }
 
@@ -36,14 +44,16 @@ fun l(colorIndex: Short): String {
 }
 
 fun main(args: Array<String>) {
-//    val edgeModel = EdgeModel()
+    val edgeModel = EdgeModel()
 //    println(edgeModel)
 //    println("edgeModel.whiteCrossSolved() = ${edgeModel.whiteCrossSolved()}")
-//
-//    val doMove = edgeModel.doMove(Move.D)
+
+//    val u2 = Move.U2
+//    val doMove = edgeModel.doMove(Move.U2)
+//    println(u2)
 //    println(doMove)
 //    println("doMove.whiteCrossSolved() = ${doMove.whiteCrossSolved()}")
-//
+
 //    val message = EdgeModel().doMoves(Move.R, Move.U, Move.R_)
 //    println(message)
 //    println("message.whiteCrossSolved() = ${message.whiteCrossSolved()}")
@@ -60,16 +70,43 @@ fun main(args: Array<String>) {
 //        i++
 //    }
 //    println("i = ${i}")
-
-    val counter = Counter(4, 3)
-    while (counter.increase()) {
-        println("counter = ${counter}")
-    }
+//
+//    val counter = Counter(4, 3)
+//    while (counter.increase()) {
+//        println("counter = ${counter}")
+//    }
 
 
     // make a beginning model, then start doing crazy shit
-    val beginModel = EdgeModel(10)
+    val moves = Move.random(15)
+    println("Scramble: $moves")
+    val scrambledModel = EdgeModel(moves)
+    println(scrambledModel)
 
+    val whiteCrossMoveCount = whiteCrossMoveCount(scrambledModel)
+    println("whiteCrossMoveCount: $whiteCrossMoveCount")
+}
+
+fun whiteCrossMoveCount(edgeModel: EdgeModel): Int {
+    for (moveCount in 1..8) {
+        // build a counter of moveCount big
+        val counter = Counter(moveCount, Move.values().size)
+
+        // count up, each state of the counter corresponds to a combination of moves
+        do {
+            // what is the move combination we're looking at?
+            val moves = Move.combo(counter)
+            // execute the moves
+            val afterMoves = edgeModel.doMoves(moves)
+            // check whitecross!
+            if(afterMoves.whiteCrossSolved()) {
+                println("White cross found!")
+                println("moves = $moves")
+                return@whiteCrossMoveCount moveCount
+            }
+        } while (counter.increase())
+    }
+    return Int.MAX_VALUE
 }
 
 /**
@@ -94,6 +131,14 @@ class Counter(size: Int, val base: Int = 10) {
         return true
     }
 
+    fun size(): Int {
+        return this.counter.size
+    }
+
+    fun digit(index: Int): Int {
+        return counter[index]
+    }
+
     override fun toString(): String = this.counter.joinToString(".")
 
     fun atMax(): Boolean {
@@ -103,32 +148,3 @@ class Counter(size: Int, val base: Int = 10) {
     }
 }
 
-const val GO = 3
-const val GW = 0
-const val GR = 1
-const val GY = 2
-
-const val WG = 18
-const val WO = 19
-const val WB = 16
-const val WR = 17
-
-const val YG = 20
-const val YO = 23
-const val YB = 22
-const val YR = 21
-
-const val RG = 7
-const val RW = 4
-const val RB = 5
-const val RY = 6
-
-const val BR = 11
-const val BW = 8
-const val BO = 9
-const val BY = 10
-
-const val OB = 15
-const val OW = 12
-const val OG = 13
-const val OY = 14
