@@ -37,7 +37,7 @@ class EdgeModel {
     constructor() {
         // do a sanity check
         val entries = mutableListOf(F, B, L, U, D, R).flatMap { it.asList() }.groupBy { it }.entries
-        println("entries = ${entries}")
+//        println("entries = ${entries}")
         if (entries.any {
                     it.value.size != 2
                 }) {
@@ -51,6 +51,12 @@ class EdgeModel {
                 ORANGE, ORANGE, ORANGE, ORANGE,
                 WHITE, WHITE, WHITE, WHITE,
                 YELLOW, YELLOW, YELLOW, YELLOW)
+    }
+
+    constructor(randomMoves: Int) {
+        val edgeModel = EdgeModel()
+        val doMoves = edgeModel.doMoves(Move.random(randomMoves))
+        this.model = doMoves.model
     }
 
     constructor(model: ShortArray) {

@@ -12,7 +12,7 @@ enum class Move {
         fun random(amount: Int): List<Move> {
             val rgen = Random()
             val result = mutableListOf<Move>()
-            for(i in 0 until amount) {
+            for (i in 0 until amount) {
                 result.add(Move.values()[rgen.nextInt(Move.values().size)])
             }
             return result
@@ -36,22 +36,71 @@ fun l(colorIndex: Short): String {
 }
 
 fun main(args: Array<String>) {
-    val edgeModel = EdgeModel()
-    println(edgeModel)
-    println("edgeModel.whiteCrossSolved() = ${edgeModel.whiteCrossSolved()}")
+//    val edgeModel = EdgeModel()
+//    println(edgeModel)
+//    println("edgeModel.whiteCrossSolved() = ${edgeModel.whiteCrossSolved()}")
+//
+//    val doMove = edgeModel.doMove(Move.D)
+//    println(doMove)
+//    println("doMove.whiteCrossSolved() = ${doMove.whiteCrossSolved()}")
+//
+//    val message = EdgeModel().doMoves(Move.R, Move.U, Move.R_)
+//    println(message)
+//    println("message.whiteCrossSolved() = ${message.whiteCrossSolved()}")
+//
+//    val doMoves = EdgeModel().doMoves(Move.random(15))
+//    println("random 15 moves = ${doMoves}")
+//    println("doMoves.whiteCrossSolved() = ${doMoves.whiteCrossSolved()}")
 
-    val doMove = edgeModel.doMove(Move.D)
-    println(doMove)
-    println("doMove.whiteCrossSolved() = ${doMove.whiteCrossSolved()}")
 
-    val message = EdgeModel().doMoves(Move.R, Move.U, Move.R_)
-    println(message)
-    println("message.whiteCrossSolved() = ${message.whiteCrossSolved()}")
+//    val begin = Instant.now()
+//    var i: Long = 0
+//    while (Duration.between(begin, Instant.now()) < Duration.ofMinutes(1)) {
+//        EdgeModel().doMoves(Move.random(15))
+//        i++
+//    }
+//    println("i = ${i}")
 
-    val doMoves = EdgeModel().doMoves(Move.random(15))
-    println("random 15 moves = ${doMoves}")
-    println("doMoves.whiteCrossSolved() = ${doMoves.whiteCrossSolved()}")
-    
+    val counter = Counter(4, 3)
+    while (counter.increase()) {
+        println("counter = ${counter}")
+    }
+
+
+    // make a beginning model, then start doing crazy shit
+    val beginModel = EdgeModel(10)
+
+}
+
+/**
+ * Counter for X digits of a given base.
+ */
+class Counter(size: Int, val base: Int = 10) {
+
+    // start the counter at [0,0,...0]
+    private var counter: Array<Int> = Array(size) { 0 }
+
+    fun increase(): Boolean {
+        if (atMax()) {
+            return false
+        }
+        for (i in this.counter.size - 1 downTo 0) {
+            this.counter[i]++
+            if (this.counter[i] == base)
+                this.counter[i] = 0
+            else
+                break
+        }
+        return true
+    }
+
+    override fun toString(): String = this.counter.joinToString(".")
+
+    fun atMax(): Boolean {
+        return counter.all {
+            it == this.base - 1
+        }
+    }
 }
 
 const val GO = 3
