@@ -44,13 +44,17 @@ fun main(args: Array<String>) {
     println(scrambledModel)
 
 //    doAllCrossMoveCounts(scrambledModel)
-    val allCrossMoveCount = allCrossMoveCount(scrambledModel)
-    allCrossMoveCount.forEach { color, moves ->
-        println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
-    }
+//    val allCrossMoveCount = allCrossMoveCount(scrambledModel)
+//    allCrossMoveCount.forEach { color, moves ->
+//        println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
+//    }
     val allCrossMoveCountUpgraded = allCrossMoveCountUpgraded(scrambledModel)
-    allCrossMoveCount.forEach { color, moves ->
-        println("cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
+    allCrossMoveCountUpgraded.forEach { color, moves ->
+        println("upgrade cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
+    }
+    val allCrossMoveCountUpgradedSkip = allCrossMoveCountUpgradedSkip(scrambledModel)
+    allCrossMoveCountUpgradedSkip.forEach { color, moves ->
+        println("skip upgrade cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
     }
 }
 
@@ -93,6 +97,47 @@ fun crossMoveCount(edgeModel: EdgeModel, color: Color): List<Move>? {
 /**
  * Solve the minimal cross for all colors. Try to upgrade the method... Can we cache the 'previous results'?
  */
+fun allCrossMoveCountUpgradedSkip(edgeModel: EdgeModel): Map<Color, List<Move>> {
+    val start = Instant.now()
+    val moveCounts = mutableMapOf<Color, List<Move>>()
+
+    for (moveCount in 1..8) {
+        println("all cross move count upgrade doing $moveCount")
+        // build a counter of moveCount big
+        val counter = Counter(moveCount, Move.values().size)
+        val edgeModelFactory = EdgeModelFactory(edgeModel, counter, true)
+
+        println("moveCounts = ${moveCounts}")
+
+        while (edgeModelFactory.hasNext()) {
+            // get the next model, using the internal counter which simply iterates over possible combinations of moves
+            val next = edgeModelFactory.getNext()
+
+            // check crosses that have not been found yet
+            Color.values().forEach { color ->
+                if (!moveCounts.containsKey(color)) {
+                    val crossSolved = next.crossSolved(color)
+                    if (crossSolved) {
+                        // what is the move combination we're looking at?
+                        val moves = Move.combo(counter)
+                        moveCounts[color] = moves
+                    }
+                }
+            }
+            // break if we have found hem all
+            if (moveCounts.keys.size == Color.values().size) {
+                println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
+//                println("counter.skipInvalidCount = ${counter.skipInvalidCount}")
+                return moveCounts
+            }
+        }
+    }
+    println("Execution time: ${Duration.between(start, Instant.now()).toMillis() / 1000}s")
+    return moveCounts
+}
+/**
+ * Solve the minimal cross for all colors. Try to upgrade the method... Can we cache the 'previous results'?
+ */
 fun allCrossMoveCountUpgraded(edgeModel: EdgeModel): Map<Color, List<Move>> {
     val start = Instant.now()
     val moveCounts = mutableMapOf<Color, List<Move>>()
@@ -104,7 +149,9 @@ fun allCrossMoveCountUpgraded(edgeModel: EdgeModel): Map<Color, List<Move>> {
         val edgeModelFactory = EdgeModelFactory(edgeModel, counter)
 
         while (edgeModelFactory.hasNext()) {
+            // get the next model, using the internal counter which simply iterates over possible combinations of moves
             val next = edgeModelFactory.getNext()
+
             // check crosses that have not been found yet
             Color.values().forEach { color ->
                 if (!moveCounts.containsKey(color)) {
@@ -134,7 +181,7 @@ fun allCrossMoveCountUpgraded(edgeModel: EdgeModel): Map<Color, List<Move>> {
  *
  * This is probably equivalent to 8 nested for loops, you'd be able to keep track of temporary solutions there too....
  */
-class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
+class EdgeModelFactory(val original: EdgeModel, val counter: Counter, val skip: Boolean = false) {
     // keep a modified version of the edgemodel for each digit in the counter, from left to right
     private val history: MutableList<EdgeModel> = mutableListOf()
 
@@ -161,7 +208,7 @@ class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
         val moves = Move.combo(counter)
         // we have a history to work with... only redo what's necessary
         for (i in counter.getLastModifiedIndex() until counter.size()) {
-            var start: EdgeModel? = null
+            var start: EdgeModel?
             start = if (i == 0)
                 original
             else
@@ -169,8 +216,14 @@ class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
             history[i] = start.doMove(Move.values()[counter.digit(i)])
         }
         // increase the counter for next time
-        if (!counter.increase()) {
-            this.hasNext = false
+        if(!skip) {
+            if (!counter.increase()) {
+                this.hasNext = false
+            }
+        } else {
+            if (!counter.increaseAndSkipInvalid()) {
+                this.hasNext = false
+            }
         }
         // the last item in the history is now the edgemodel we need to test...
         return history.last()
@@ -186,6 +239,7 @@ fun allCrossMoveCount(edgeModel: EdgeModel): Map<Color, List<Move>> {
 
     for (moveCount in 1..8) {
         // build a counter of moveCount big
+        println("allCrossMoveCount basic doing $moveCount")
         val counter = Counter(moveCount, Move.values().size)
 
         // count up, each state of the counter corresponds to a combination of moves
