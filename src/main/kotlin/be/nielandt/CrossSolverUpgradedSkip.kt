@@ -7,15 +7,11 @@ class CrossSolverUpgradedSkip : CrossSolver() {
 
     override fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Move>> {
         val moveCounts = mutableMapOf<Int, List<Move>>()
-
         for (moveCount in 1..8) {
             println("all cross move count upgrade doing $moveCount")
             // build a counter of moveCount big
-            val counter = Counter(moveCount, Move.values().size)
-            // TODO skip the counter
+            val counter = CounterSkipSameFaces(moveCount, Move.values().size)
             val edgeModelFactory = EdgeModelFactory(edgeModel, counter)
-
-            println("moveCounts = ${moveCounts}")
 
             while (edgeModelFactory.hasNext()) {
                 // get the next model, using the internal counter which simply iterates over possible combinations of moves
@@ -34,7 +30,6 @@ class CrossSolverUpgradedSkip : CrossSolver() {
                 }
                 // break if we have found hem all
                 if (moveCounts.keys.size == 6) {
-//                println("counter.skipInvalidCount = ${counter.skipInvalidCount}")
                     return moveCounts
                 }
             }

@@ -67,16 +67,19 @@ fun main(args: Array<String>) {
 
 
     // scramble random
-    val moves = Move.random(20)
+    val moves = Move.random(10)
     println("Scramble: $moves")
     val scrambledModel = EdgeModel(moves)
     println(scrambledModel)
 
-    val baseSolve = CrossSolverBase().solveCrossesTimed(scrambledModel)
-    CrossSolver.printResults(baseSolve)
+//    val baseSolve = CrossSolverBase().solveCrossesTimed(scrambledModel)
+//    CrossSolver.printResults(baseSolve)
 
     val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(scrambledModel)
     CrossSolver.printResults(upgradedSolve)
+
+    val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(scrambledModel)
+    CrossSolver.printResults(upgradedSolveSkip)
 
 //    val allCrossMoveCountUpgradedSkip = allCrossMoveCountUpgradedSkip(scrambledModel)
 //    allCrossMoveCountUpgradedSkip.forEach { color, moves ->

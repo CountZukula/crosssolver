@@ -28,12 +28,12 @@ class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
 
     fun getNext(): EdgeModel {
         // the counter was increased, hooray
-        val lastOverflowIndex = counter.getLastModifiedIndex()
+        val lastOverflowIndex = counter.lastModifiedIndex
         // we only need to redo everything starting from the lastoverflowindex
         // these are our moves, but we can salvage everything up to lastoverflowindex
         val moves = Move.combo(counter)
         // we have a history to work with... only redo what's necessary
-        for (i in counter.getLastModifiedIndex() until counter.size()) {
+        for (i in counter.lastModifiedIndex until counter.size()) {
             var start: EdgeModel = if (i == 0)
                 original
             else

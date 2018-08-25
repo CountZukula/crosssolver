@@ -5,29 +5,25 @@ import kotlin.math.min
 /**
  * Counter for X digits of a given base.
  */
-class Counter(size: Int, val base: Int = 10) {
+open class Counter(size: Int, val base: Int = 10) {
 
     /**
      * Empty counter, all 0 values for each digit.
      */
-    private var counter: Array<Int> = Array(size) { 0 }
+    protected var counter: Array<Int> = Array(size) { 0 }
 
     /**
      *  The last (highest significance) index that overflowed and has been changed in the counter. Could be null, if it never overflowed.
      *  Start with saying that everything changed.
      */
-    private var lastModifiedIndex: Int = 0
-
-    fun getLastModifiedIndex(): Int {
-        return this.lastModifiedIndex
-    }
+     var lastModifiedIndex: Int = 0
 
     /**
      * Increase the counter.
      *
      * @return true if the increase happened, false if we hit the ceiling.
      */
-    fun increase(): Boolean {
+    open fun increase(): Boolean {
         if (atMax()) {
             return false
         }

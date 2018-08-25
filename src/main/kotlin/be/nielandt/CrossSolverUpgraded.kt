@@ -1,16 +1,12 @@
 package be.nielandt
 
-import java.time.Instant
-
 /**
  * This solver avoids redoing edgemodel manipulations. Should be equivalent to X nested for loops.
  */
 class CrossSolverUpgraded : CrossSolver() {
 
     override fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Move>> {
-        val start = Instant.now()
         val moveCounts = mutableMapOf<Int, List<Move>>()
-
         for (moveCount in 1..8) {
             println("all cross move count upgrade doing $moveCount")
             // build a counter of moveCount big
