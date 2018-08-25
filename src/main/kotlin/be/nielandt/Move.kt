@@ -6,7 +6,10 @@ import java.util.*
  * All the possible moves on the cube.
  */
 enum class Move {
-    F, F_, F2, B, B_, B2, L, L_, L2, R, R_, R2, U, U_, U2, D, D_, D2;
+    // these are purposely put in this order: Move.index % 6 will result in the same value for the same face
+    F, B, U, D, L, R,
+    F_, B_, U_, D_, L_, R_,
+    F2, B2, U2, D2, L2, R2;
 
     /**
      * Static methods for the Move object.

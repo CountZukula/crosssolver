@@ -21,7 +21,7 @@ open abstract class CrossSolver {
         fun printResults(results: Map<Int, List<Move>>) {
             println("results: ")
             results.forEach { color, moveList ->
-                println("> color ${colorLetter(color)}, moves $moveList")
+                println("> color ${colorLetter(color)}, moves (${moveList.size}) $moveList")
             }
         }
     }

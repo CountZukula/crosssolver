@@ -31,10 +31,9 @@ class CounterSkipSameFaces(size: Int, base: Int = 10): Counter(size, base) {
      */
     private fun containsConsecutiveSameFaceMoves(): Boolean {
         for (i in 1 until this.counter.size) {
-            val current = Move.values()[this.counter[i]]
-            val previous = Move.values()[this.counter[i - 1]]
-            if (current sameFace previous)
-                return true
+            // perhaps is a speedup
+            if(this.counter[i]%6 == this.counter[i-1]%6)
+               return true
         }
         return false
     }
