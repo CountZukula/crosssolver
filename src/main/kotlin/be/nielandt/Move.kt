@@ -2,75 +2,95 @@ package be.nielandt
 
 import java.util.*
 
-/**
- * All the possible moves on the cube.
- */
-enum class Move {
-    // these are purposely put in this order: Move.index % 6 will result in the same value for the same face
-    F, B, U, D, L, R,
-    F_, B_, U_, D_, L_, R_,
-    F2, B2, U2, D2, L2, R2;
+// constant values for all the moves
+// these are purposely put in this order: Move.index % 6 will result in the same value for the same face
+const val F = 0
+const val B = 1
+const val U = 2
+const val D = 3
+const val L = 4
+const val R = 5
 
-    /**
-     * Static methods for the Move object.
-     */
-    companion object {
-        /**
-         * Make a random set of moves that makes sense.
-         */
-        fun random(amount: Int): List<Move> {
-            val rgen = Random()
-            val result = mutableListOf<Move>()
-            while (result.size < amount) {
-                val randomMove = Move.values()[rgen.nextInt(Move.values().size)]
-                // check if it makes sense?
-                if (result.isNotEmpty() && result.last() otherFace randomMove)
-                    result.add(randomMove)
-                else if (result.isEmpty())
-                    result.add(randomMove)
-            }
-            return result
-        }
+const val F_ = 6
+const val B_ = 7
+const val U_ = 8
+const val D_ = 9
+const val L_ = 10
+const val R_ = 11
 
-        /**
-         * Use the given counter, which contains digits that correspond with the amount of Moves, to generate a list of Moves.
-         * Highest significant digits of the counter are added first (are first in the result list).
-         */
-        fun combo(counter: Counter): List<Move> {
-            val res = mutableListOf<Move>()
-            for (i in 0 until counter.size()) {
-                res.add(Move.values()[counter.digit(i)])
-            }
-            return res
-        }
+const val F2 = 12
+const val B2 = 13
+const val U2 = 14
+const val D2 = 15
+const val L2 = 16
+const val R2 = 17
 
-        /**
-         * Parse a set of moves, separated by spaces, using the Move.enum names.
-         */
-        fun parse(s: String): List<Move> {
-            val result = mutableListOf<Move>()
-            s.split(" ", ",", ";").forEach {
-                if (it.isNotEmpty()) {
-                    result.add(Move.valueOf(it))
-                }
-            }
-            return result
+fun decodeMove(i: Int): String {
+    return when(i) {
+        F -> "F"
+        B -> "B"
+        U -> "U"
+        D -> "D"
+        L -> "L"
+        R -> "R"
+
+        F_ -> "F_"
+        B_ -> "B_"
+        U_ -> "U_"
+        D_ -> "D_"
+        L_ -> "L_"
+        R_ -> "R_"
+
+        F2 -> "F2"
+        B2 -> "B2"
+        U2 -> "U2"
+        D2 -> "D2"
+        L2 -> "L2"
+        R2 -> "R2"
+        else -> {
+            println("i = ${i}")
+            throw IllegalArgumentException()
         }
     }
-
-    /**
-     * Use this as `Move otherFace Move`, a quick way to check if the moves manipulate the same face or not.
-     * Example: `Move.F otherFace Move.U_ == false`
-     */
-    infix fun otherFace(otherMove: Move): Boolean {
-        return this.toString().substring(0, 1) != otherMove.toString().substring(0, 1)
-    }
-
-    /**
-     * Are both moves on the same face? Would be true for F2 and F_, for example.
-     */
-    infix fun sameFace(otherMove: Move): Boolean {
-        return !otherFace(otherMove)
-    }
-
 }
+
+fun parseMoves(s: String): List<Int> {
+    return s.split(" ", ",", ";").filter { it?.length > 0 }.map { parseMove(it) }.toList()
+}
+
+fun parseMove(s: String): Int {
+    return when (s) {
+        "F" -> F
+        "B" -> B
+        "U" -> U
+        "D" -> D
+        "L" -> L
+        "R" -> R
+
+        "F_" -> F_
+        "B_" -> B_
+        "U_" -> U_
+        "D_" -> D_
+        "L_" -> L_
+        "R_" -> R_
+
+        "F2" -> F2
+        "B2" -> B2
+        "U2" -> U2
+        "D2" -> D2
+        "L2" -> L2
+        "R2" -> R2
+        else -> {
+            println("s = ${s}")
+            throw IllegalArgumentException()
+        }
+    }
+}
+
+fun randomMoves(amount: Int): Array<Int> {
+    val rgen = Random()
+    return Array(amount) {
+        rgen.nextInt(18)
+    }
+}
+

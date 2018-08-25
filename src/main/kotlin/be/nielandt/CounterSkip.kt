@@ -5,7 +5,7 @@ import kotlin.math.min
 /**
  * Counter for X digits of a given base. Skips situations where faces are the same.
  */
-class CounterSkipSameFaces(size: Int, base: Int = 10): Counter(size, base) {
+class CounterSkip(size: Int): Counter(size, 18) {
 
     /**
      * Increase the counter.

@@ -5,12 +5,12 @@ package be.nielandt
  */
 class CrossSolverUpgradedSkip : CrossSolver() {
 
-    override fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Move>> {
-        val moveCounts = mutableMapOf<Int, List<Move>>()
+    override fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Int>> {
+        val moveCounts = mutableMapOf<Int, List<Int>>()
         for (moveCount in 1..8) {
             println("all cross move count upgrade doing $moveCount")
             // build a counter of moveCount big
-            val counter = CounterSkipSameFaces(moveCount, Move.values().size)
+            val counter = CounterSkip(moveCount)
             val edgeModelFactory = EdgeModelFactory(edgeModel, counter)
 
             while (edgeModelFactory.hasNext()) {
@@ -23,8 +23,7 @@ class CrossSolverUpgradedSkip : CrossSolver() {
                         val crossSolved = next.crossSolved(color)
                         if (crossSolved) {
                             // what is the move combination we're looking at?
-                            val moves = Move.combo(counter)
-                            moveCounts[color] = moves
+                            moveCounts[color] = counter.counter.toList()
                         }
                     }
                 }

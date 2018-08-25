@@ -7,9 +7,9 @@ open abstract class CrossSolver {
     /**
      * Solve all crosses, look for a minimal set of moves for each color's cross.
      */
-    abstract fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Move>>
+    abstract fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Int>>
 
-    fun solveCrossesTimed(edgeModel: EdgeModel): Map<Int, List<Move>> {
+    fun solveCrossesTimed(edgeModel: EdgeModel): Map<Int, List<Int>> {
         val now = Instant.now()
         val solveCrosses = solveCrosses(edgeModel)
         val between = Duration.between(now, Instant.now())
@@ -18,10 +18,10 @@ open abstract class CrossSolver {
     }
 
     companion object {
-        fun printResults(results: Map<Int, List<Move>>) {
+        fun printResults(results: Map<Int, List<Int>>) {
             println("results: ")
             results.forEach { color, moveList ->
-                println("> color ${colorLetter(color)}, moves (${moveList.size}) $moveList")
+                println("> color ${colorLetter(color)}, moves (${moveList.size}) ${moveList.map { it -> decodeMove(it) }}")
             }
         }
     }
@@ -62,23 +62,26 @@ fun main(args: Array<String>) {
 
 
     // do a fixed scramble for testing purposes
-    val fixedMoves = Move.parse("L L_ R R2")
+    // noskip Move.enum 30s, skip Move.enum 32s
+    val fixedMoves = parseMoves("L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R")
     println("fixedMoves = ${fixedMoves}")
-
-
     // scramble random
-    val moves = Move.random(10)
-    println("Scramble: $moves")
-    val scrambledModel = EdgeModel(moves)
-    println(scrambledModel)
+    val randomMoves = randomMoves(20)
+
+    val moves = fixedMoves
+    println("Scramble: ${moves.map { decodeMove(it) }}")
+
+
+    val usedModel = EdgeModel(moves)
+    println(usedModel)
 
 //    val baseSolve = CrossSolverBase().solveCrossesTimed(scrambledModel)
 //    CrossSolver.printResults(baseSolve)
 
-    val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(scrambledModel)
+    val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolve)
 
-    val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(scrambledModel)
+    val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolveSkip)
 
 //    val allCrossMoveCountUpgradedSkip = allCrossMoveCountUpgradedSkip(scrambledModel)

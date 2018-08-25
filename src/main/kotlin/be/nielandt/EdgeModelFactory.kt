@@ -16,9 +16,9 @@ class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
 
     init {
         // init the history
-        this.history.add(original.doMove(Move.values()[counter.digit(0)]))
+        this.history.add(original.doMove(counter.digit(0)))
         for (i in 1 until counter.size()) {
-            this.history.add(this.history.last().doMove(Move.values()[counter.digit(i)]))
+            this.history.add(this.history.last().doMove(counter.digit(i)))
         }
     }
 
@@ -31,14 +31,13 @@ class EdgeModelFactory(val original: EdgeModel, val counter: Counter) {
         val lastOverflowIndex = counter.lastModifiedIndex
         // we only need to redo everything starting from the lastoverflowindex
         // these are our moves, but we can salvage everything up to lastoverflowindex
-        val moves = Move.combo(counter)
         // we have a history to work with... only redo what's necessary
         for (i in counter.lastModifiedIndex until counter.size()) {
             var start: EdgeModel = if (i == 0)
                 original
             else
                 history[i - 1]
-            history[i] = start.doMove(Move.values()[counter.digit(i)])
+            history[i] = start.doMove(counter.digit(i))
         }
         // increase the counter for next time
         if (!counter.increase()) {

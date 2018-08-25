@@ -9,7 +9,7 @@ package be.nielandt
 -         |   18   |
 -------------------------------------
 |   12   |   00   |   04   |   08   |
-|15 O  13|03 G  01|07 R  05|11 B  09|
+|15 O  13|03 G  01|07 R_indices  05|11 B_indices  09|
 |   14   |   02   |   06   |   10   |
 -------------------------------------
 -         |   20   |
@@ -28,16 +28,16 @@ class EdgeModel {
 
     val model: Array<Int>
 
-    private val F = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
-    private val B = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
-    private val L = intArrayOf(3, 23, 9, 19, 12, 13, 14, 15)
-    private val U = intArrayOf(16, 17, 18, 19, 0, 12, 8, 4)
-    private val D = intArrayOf(2, 6, 10, 14, 20, 21, 22, 23)
-    private val R = intArrayOf(4, 5, 6, 7, 1, 17, 11, 21)
+    private val F_indices = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
+    private val B_indices = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
+    private val L_indices = intArrayOf(3, 23, 9, 19, 12, 13, 14, 15)
+    private val U_indices = intArrayOf(16, 17, 18, 19, 0, 12, 8, 4)
+    private val D_indices = intArrayOf(2, 6, 10, 14, 20, 21, 22, 23)
+    private val R_indices = intArrayOf(4, 5, 6, 7, 1, 17, 11, 21)
 
     constructor() {
         // do a sanity check
-        val entries = mutableListOf(F, B, L, U, D, R).flatMap { it.asList() }.groupBy { it }.entries
+        val entries = mutableListOf(F_indices, B_indices, L_indices, U_indices, D_indices, R_indices).flatMap { it.asList() }.groupBy { it }.entries
 //        println("entries = ${entries}")
         if (entries.any {
                     it.value.size != 2
@@ -57,7 +57,8 @@ class EdgeModel {
 
     constructor(randomMoves: Int) {
         val edgeModel = EdgeModel()
-        val doMoves = edgeModel.doMoves(Move.random(randomMoves))
+        val r: Array<Int> = randomMoves(randomMoves)
+        val doMoves = edgeModel.doMoves(r)
         this.model = doMoves.model
     }
 
@@ -65,7 +66,7 @@ class EdgeModel {
         this.model = model
     }
 
-    constructor(moves: List<Move>) {
+    constructor(moves: List<Int>) {
         val edgeModel = EdgeModel()
         val newModel = edgeModel.doMoves(moves)
         this.model = newModel.model
@@ -74,7 +75,7 @@ class EdgeModel {
     /**
      * Do a single move and calculate the resulting edge model.
      */
-    fun doMove(move: Move): EdgeModel {
+    fun doMove(move: Int): EdgeModel {
         val copyOf = this.model.copyOf()
         // execute the move
 
@@ -126,24 +127,24 @@ class EdgeModel {
         }
 
         when (move) {
-            Move.F -> nonPrime(F)
-            Move.F_ -> prime(F)
-            Move.F2 -> double(F)
-            Move.B -> nonPrime(B)
-            Move.B_ -> prime(B)
-            Move.B2 -> double(B)
-            Move.L -> nonPrime(L)
-            Move.L_ -> prime(L)
-            Move.L2 -> double(L)
-            Move.R -> nonPrime(R)
-            Move.R_ -> prime(R)
-            Move.R2 -> double(R)
-            Move.U -> nonPrime(U)
-            Move.U_ -> prime(U)
-            Move.U2 -> double(U)
-            Move.D -> nonPrime(D)
-            Move.D_ -> prime(D)
-            Move.D2 -> double(D)
+            F -> nonPrime(F_indices)
+            F_ -> prime(F_indices)
+            F2 -> double(F_indices)
+            B -> nonPrime(B_indices)
+            B_ -> prime(B_indices)
+            B2 -> double(B_indices)
+            L -> nonPrime(L_indices)
+            L_ -> prime(L_indices)
+            L2 -> double(L_indices)
+            R -> nonPrime(R_indices)
+            R_ -> prime(R_indices)
+            R2 -> double(R_indices)
+            U -> nonPrime(U_indices)
+            U_ -> prime(U_indices)
+            U2 -> double(U_indices)
+            D -> nonPrime(D_indices)
+            D_ -> prime(D_indices)
+            D2 -> double(D_indices)
         }
         return EdgeModel(copyOf)
     }
@@ -170,7 +171,7 @@ class EdgeModel {
         return trimMargin
     }
 
-    fun doMoves(f: Collection<Move>): EdgeModel {
+    fun doMoves(f: Array<Int>) : EdgeModel {
         var edgeModel = this
         f.forEach {
             edgeModel = edgeModel.doMove(it)
@@ -178,10 +179,21 @@ class EdgeModel {
         return edgeModel
     }
 
-    fun doMoves(vararg f: Move): EdgeModel {
+    fun doMoves(f: Collection<Int>): EdgeModel {
+        var edgeModel = this
+        f.forEach {
+            edgeModel = edgeModel.doMove(it)
+        }
+        return edgeModel
+    }
+
+    fun doMoves(vararg f: Int): EdgeModel {
         return this.doMoves(f.toList())
     }
 
+    /**
+     * Pass any of the colors WHITE, YELLOW, RED, ...
+     */
     fun crossSolved(color: Int): Boolean {
         return when (color) {
             WHITE -> {
