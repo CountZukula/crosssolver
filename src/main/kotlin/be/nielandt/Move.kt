@@ -40,6 +40,19 @@ enum class Move {
             }
             return res
         }
+
+        /**
+         * Parse a set of moves, separated by spaces, using the Move.enum names.
+         */
+        fun parse(s: String): List<Move> {
+            val result = mutableListOf<Move>()
+            s.split(" ", ",", ";").forEach {
+                if (it.isNotEmpty()) {
+                    result.add(Move.valueOf(it))
+                }
+            }
+            return result
+        }
     }
 
     /**

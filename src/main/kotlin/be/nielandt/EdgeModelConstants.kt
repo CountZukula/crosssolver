@@ -37,8 +37,25 @@ const val OY = 14
 /**
  * Six colors
  */
-enum class Color(index: Int) {
-    WHITE(0), YELLOW(1), ORANGE(2), RED(3), GREEN(4), BLUE(5)
+const val WHITE = 0
+const val YELLOW = 1
+const val ORANGE = 2
+const val RED = 3
+const val GREEN = 4
+const val BLUE = 5
+
+
+/**
+ * Convert the color into a single digit for print purposes.
+ */
+fun colorLetter(c: Int): String {
+    return when (c) {
+        WHITE -> "W"
+        YELLOW -> "Y"
+        RED -> "R"
+        BLUE -> "B"
+        GREEN -> "G"
+        ORANGE -> "O"
+        else -> "?"
+    }
 }
-
-

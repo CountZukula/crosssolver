@@ -1,6 +1,6 @@
 package be.nielandt
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class EdgeModelTest {
@@ -10,7 +10,7 @@ class EdgeModelTest {
         // try each move
         Move.values().forEach { move ->
             val doMove = EdgeModel().doMove(move)
-            val count = Color.values().map { color ->
+            val count = (0..5).map { color ->
                 val crossSolved = doMove.crossSolved(color)
                 crossSolved
             }.count { it }
@@ -18,14 +18,4 @@ class EdgeModelTest {
         }
     }
 
-    @Test
-    fun findAtLeastOneCombo() {
-        val white = Color.WHITE
-        val doMoves = EdgeModel().doMoves(Move.random(20))
-        val crossMoveCount = crossMoveCount(doMoves, Color.WHITE)
-        assertNotNull(crossMoveCount)
-        assertTrue(crossMoveCount!!.size<9)
-        println(doMoves)
-        println("crossMoveCount = $crossMoveCount")
-    }
 }

@@ -26,7 +26,7 @@ package be.nielandt
 
 class EdgeModel {
 
-    val model: Array<Color>
+    val model: Array<Int>
 
     private val F = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
     private val B = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
@@ -46,12 +46,12 @@ class EdgeModel {
         }
 
         model = arrayOf(
-                Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
-                Color.RED, Color.RED, Color.RED, Color.RED,
-                Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
-                Color.ORANGE, Color.ORANGE, Color.ORANGE, Color.ORANGE,
-                Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
-                Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW
+                GREEN, GREEN, GREEN, GREEN,
+                RED, RED, RED, RED,
+                BLUE, BLUE, BLUE, BLUE,
+                ORANGE, ORANGE, ORANGE, ORANGE,
+                WHITE, WHITE, WHITE, WHITE,
+                YELLOW, YELLOW, YELLOW, YELLOW
         )
     }
 
@@ -61,7 +61,7 @@ class EdgeModel {
         this.model = doMoves.model
     }
 
-    constructor(model: Array<Color>) {
+    constructor(model: Array<Int>) {
         this.model = model
     }
 
@@ -154,17 +154,17 @@ class EdgeModel {
     override fun toString(): String {
         val trimMargin = """
         |        ---------
-        |        |   ${l(model[16])}   |
-        |        | ${l(model[19])} W ${l(model[17])} |
-        |        |   ${l(model[18])}   |
+        |        |   ${colorLetter(model[16])}   |
+        |        | ${colorLetter(model[19])} W ${colorLetter(model[17])} |
+        |        |   ${colorLetter(model[18])}   |
         |---------------------------------
-        ||   ${l(model[12])}   |   ${l(model[0])}   |   ${l(model[4])}   |   ${l(model[8])}   |
-        || ${l(model[15])} O ${l(model[13])} | ${l(model[3])} G ${l(model[1])} | ${l(model[7])} R ${l(model[5])} | ${l(model[11])} B ${l(model[9])} |
-        ||   ${l(model[14])}   |   ${l(model[2])}   |   ${l(model[6])}   |   ${l(model[10])}   |
+        ||   ${colorLetter(model[12])}   |   ${colorLetter(model[0])}   |   ${colorLetter(model[4])}   |   ${colorLetter(model[8])}   |
+        || ${colorLetter(model[15])} O ${colorLetter(model[13])} | ${colorLetter(model[3])} G ${colorLetter(model[1])} | ${colorLetter(model[7])} R ${colorLetter(model[5])} | ${colorLetter(model[11])} B ${colorLetter(model[9])} |
+        ||   ${colorLetter(model[14])}   |   ${colorLetter(model[2])}   |   ${colorLetter(model[6])}   |   ${colorLetter(model[10])}   |
         |---------------------------------
-        |        |   ${l(model[20])}   |
-        |        | ${l(model[23])} Y ${l(model[21])} |
-        |        |   ${l(model[22])}   |
+        |        |   ${colorLetter(model[20])}   |
+        |        | ${colorLetter(model[23])} Y ${colorLetter(model[21])} |
+        |        |   ${colorLetter(model[22])}   |
         |        ---------
         """.trimMargin()
         return trimMargin
@@ -182,31 +182,34 @@ class EdgeModel {
         return this.doMoves(f.toList())
     }
 
-    fun crossSolved(color: Color): Boolean {
+    fun crossSolved(color: Int): Boolean {
         return when (color) {
-            Color.WHITE -> {
-                model[WB] == Color.WHITE && model[WG] == Color.WHITE && model[WO] == Color.WHITE && model[WR] == Color.WHITE &&
-                        model[BW] == Color.BLUE && model[GW] == Color.GREEN && model[OW] == Color.ORANGE && model[RW] == Color.RED
+            WHITE -> {
+                model[WB] == WHITE && model[WG] == WHITE && model[WO] == WHITE && model[WR] == WHITE &&
+                        model[BW] == BLUE && model[GW] == GREEN && model[OW] == ORANGE && model[RW] == RED
             }
-            Color.YELLOW -> {
-                model[YB] == Color.YELLOW && model[YG] == Color.YELLOW && model[YO] == Color.YELLOW && model[YR] == Color.YELLOW &&
-                        model[BY] == Color.BLUE && model[GY] == Color.GREEN && model[OY] == Color.ORANGE && model[RY] == Color.RED
+            YELLOW -> {
+                model[YB] == YELLOW && model[YG] == YELLOW && model[YO] == YELLOW && model[YR] == YELLOW &&
+                        model[BY] == BLUE && model[GY] == GREEN && model[OY] == ORANGE && model[RY] == RED
             }
-            Color.RED -> {
-                model[RW] == Color.RED && model[RG] == Color.RED && model[RY] == Color.RED && model[RB] == Color.RED &&
-                        model[WR] == Color.WHITE && model[GR] == Color.GREEN && model[YR] == Color.YELLOW && model[BR] == Color.BLUE
+            RED -> {
+                model[RW] == RED && model[RG] == RED && model[RY] == RED && model[RB] == RED &&
+                        model[WR] == WHITE && model[GR] == GREEN && model[YR] == YELLOW && model[BR] == BLUE
             }
-            Color.BLUE -> {
-                model[BW] == Color.BLUE && model[BR] == Color.BLUE && model[BY] == Color.BLUE && model[BO] == Color.BLUE &&
-                        model[WB] == Color.WHITE && model[RB] == Color.RED && model[YB] == Color.YELLOW && model[OB] == Color.ORANGE
+            BLUE -> {
+                model[BW] == BLUE && model[BR] == BLUE && model[BY] == BLUE && model[BO] == BLUE &&
+                        model[WB] == WHITE && model[RB] == RED && model[YB] == YELLOW && model[OB] == ORANGE
             }
-            Color.GREEN -> {
-                model[GW] == Color.GREEN && model[GO] == Color.GREEN && model[GY] == Color.GREEN && model[GR] == Color.GREEN &&
-                        model[WG] == Color.WHITE && model[OG] == Color.ORANGE && model[YG] == Color.YELLOW && model[RG] == Color.RED
+            GREEN -> {
+                model[GW] == GREEN && model[GO] == GREEN && model[GY] == GREEN && model[GR] == GREEN &&
+                        model[WG] == WHITE && model[OG] == ORANGE && model[YG] == YELLOW && model[RG] == RED
             }
-            Color.ORANGE -> {
-                model[OW] == Color.ORANGE && model[OB] == Color.ORANGE && model[OY] == Color.ORANGE && model[OG] == Color.ORANGE &&
-                        model[WO] == Color.WHITE && model[BO] == Color.BLUE && model[YO] == Color.YELLOW && model[GO] == Color.GREEN
+            ORANGE -> {
+                model[OW] == ORANGE && model[OB] == ORANGE && model[OY] == ORANGE && model[OG] == ORANGE &&
+                        model[WO] == WHITE && model[BO] == BLUE && model[YO] == YELLOW && model[GO] == GREEN
+            }
+            else -> {
+                throw RuntimeException()
             }
         }
     }
