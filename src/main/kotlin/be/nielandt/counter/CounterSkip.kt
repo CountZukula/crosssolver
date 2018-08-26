@@ -36,7 +36,7 @@ class CounterSkip(size: Int) : Counter(size, 18) {
             this.counter[i]++
 
             // if we've hit the maximum value on the first digit, return false
-            if(this.counter[i]==base && i == 0)
+            if (this.counter[i] == base && i == 0)
                 return false
 
             this.lastModifiedIndex = i

@@ -54,6 +54,10 @@ fun decodeMove(i: Int): String {
     }
 }
 
+fun classOf(move: Int): Int {
+    return (move%6) / 2
+}
+
 fun parseMoves(s: String): List<Int> {
     return s.split(" ", ",", ";").filter { it?.length > 0 }.map { parseMove(it) }.toList()
 }
