@@ -1,5 +1,7 @@
 package be.nielandt
 
+import be.nielandt.counter.CounterBasic
+
 class CrossSolverBase : CrossSolver() {
     /**
      * Solve the minimal cross for all colors.
@@ -10,7 +12,7 @@ class CrossSolverBase : CrossSolver() {
         for (moveCount in 1..8) {
             // build a counter of moveCount big
             println("allCrossMoveCount basic doing $moveCount")
-            val counter = Counter(moveCount, 18)
+            val counter = CounterBasic(moveCount)
 
             // count up, each state of the counter corresponds to a combination of moves
             do {

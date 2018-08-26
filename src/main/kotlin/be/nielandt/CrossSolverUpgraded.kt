@@ -1,5 +1,7 @@
 package be.nielandt
 
+import be.nielandt.counter.CounterBasic
+
 /**
  * This solver avoids redoing edgemodel manipulations. Should be equivalent to X nested for loops.
  */
@@ -10,7 +12,7 @@ class CrossSolverUpgraded : CrossSolver() {
         for (moveCount in 1..8) {
             println("all cross move count upgrade doing $moveCount")
             // build a counter of moveCount big
-            val counter = Counter(moveCount, 18)
+            val counter = CounterBasic(moveCount)
             val edgeModelFactory = EdgeModelFactory(edgeModel, counter)
 
             while (edgeModelFactory.hasNext()) {

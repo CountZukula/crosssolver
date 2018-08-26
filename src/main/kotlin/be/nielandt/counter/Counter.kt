@@ -1,9 +1,9 @@
-package be.nielandt
+package be.nielandt.counter
 
 /**
  * Counter for X digits of a given base.
  */
-open class Counter(size: Int, val base: Int = 18) {
+open abstract class Counter(size: Int, val base: Int = 18) {
 
     /**
      * Empty counter, all 0 values for each digit.
@@ -17,26 +17,9 @@ open class Counter(size: Int, val base: Int = 18) {
      var lastModifiedIndex: Int = 0
 
     /**
-     * Increase the counter.
-     *
-     * @return true if the increase happened, false if we hit the ceiling.
+     * Increase the counter one step. True if it succeeded and a new value is there, false if we've reached the end.
      */
-    open fun increase(): Boolean {
-        if (atMax()) {
-            return false
-        }
-        for (i in this.counter.size - 1 downTo 0) {
-            this.counter[i]++
-            this.lastModifiedIndex = i
-            if (this.counter[i] == base) {
-                this.counter[i] = 0
-            } else {
-                // keep track of the digit index we're breaking on.
-                break
-            }
-        }
-        return true
-    }
+    abstract fun increase(): Boolean
 
     /**
      * How many digits does this counter contain?

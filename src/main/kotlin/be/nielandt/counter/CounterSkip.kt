@@ -1,4 +1,4 @@
-package be.nielandt
+package be.nielandt.counter
 
 import java.util.*
 

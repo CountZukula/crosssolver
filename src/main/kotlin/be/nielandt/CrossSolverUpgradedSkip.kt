@@ -1,5 +1,7 @@
 package be.nielandt
 
+import be.nielandt.counter.CounterSkip
+
 /**
  * This solver avoids redoing edgemodel manipulations. Should be equivalent to X nested for loops.
  */

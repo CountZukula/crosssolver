@@ -1,5 +1,7 @@
 package be.nielandt
 
+import be.nielandt.counter.Counter
+
 /**
  * This thing helps us to create edgemodels using a counter. The advantage is that the edgemodel doesn't need to be calculated
  * completely from scratch: previous states are kept, so if, e.g., the third digit changes in the counter (of length 5),
