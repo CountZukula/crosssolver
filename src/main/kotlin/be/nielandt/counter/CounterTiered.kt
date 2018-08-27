@@ -7,21 +7,15 @@ import be.nielandt.decodeMove
  * 1) tier1 : axes / move classes (FB/UD/RL) -> three classes, but multiple sizes (1 or 2) possible
  * 2) tier2: each block of class (22, 11, 2, 11, 0, ...) needs to be expanded into the full range of related moves
  */
-class CounterTiered : Counter {
+class CounterTiered : Counter(8) {
 
-    private val moveIterator: Iterator<Array<Int>>
+    private val moveIterator: Iterator<Array<Int>> = listOf<Array<Int>>().iterator()
 
     override fun increase(): Boolean {
         if (!this.moveIterator.hasNext())
             return false
         this.counter = this.moveIterator.next()
         return true
-    }
-
-
-    constructor(size: Int) : super(size, 18) {
-        this.moveIterator = moveIterator().iterator()
-        this.increase()
     }
 
     override fun atMax(): Boolean {
@@ -65,71 +59,15 @@ class CounterTiered : Counter {
 
     }
 
-    fun moveIterator(): Iterator<Array<Int>> {
-        return MoveIterator(classIterator()).iterator()
-    }
 
-    /**
-     * These are the classes (FB/UD/RL), correctly configured (no illegal combinations here)
-     */
-    fun classIterator(): List<List<Int>> {
-        val classes = appendRandomClass(this.counter.size, listOf())
-        return classes
-    }
-
-    /**
-     * Helper function for classIterator()
-     */
-    private fun appendRandomClass(size: Int, base: List<Int>): List<List<Int>> {
-        val result = mutableListOf<List<Int>>()
-        when {
-            base.size < size - 1 -> // add all classes, but don't repeat a group already there
-                (0..2).filter { if (base.isNotEmpty()) it != base.last() else true }
-                        .forEach { theClass ->
-                            // and both amounts, 1+2
-                            (1..2).forEach { amount ->
-                                val l = base.toMutableList()
-                                for (i in 1..amount) {
-                                    l.add(theClass)
-                                }
-                                result.addAll(appendRandomClass(size, l))
-                            }
-                        }
-            base.size == size -> {
-                // we're done here
-                result.add(base)
-            }
-            base.size == size - 1 -> // the base is not empty, only add class that is not at the end of the base list
-                (0..2).filter { if (base.isEmpty()) true else it != base.last() }.forEach { theClass ->
-                    val l = base.toMutableList()
-                    l.add(theClass)
-                    result.add(l)
-                }
-        }
-        return result
-    }
 }
 
 class CounterTieredFactory {
     companion object {
         fun create(size: Int): CounterTiered {
-            return CounterTiered(size)
+            return CounterTiered()
         }
     }
-}
-
-fun main(args: Array<String>) {
-    var count = 0
-    CounterTieredFactory.create(4).classIterator().forEach {
-        println("it = ${it}")
-        count++
-    }
-    println("count = ${count}")
-//    CounterTieredFactory.create(7).moveIterator().forEach {
-//        println("Arrays.tostring(it) = ${Arrays.toString(it)} ${it.map { decodeMove(it) }.toList()}")
-//        count++
-//    }
-//    println("count = ${count}")
 }
 
 /**
