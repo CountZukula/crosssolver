@@ -49,7 +49,7 @@ class ValidMoveIterator(val classes: List<Int>) : Iterator<IntArray> {
                 // class 2 (LR) has to expand to 4,10,16 (L,L_L2) and 5,11,17 (R,R_,R2) respectively
                 // next will contain 0,1,3, as the classes are a pair
                 val c1 = (classes[i] * 2) + 6 * next[i]
-                val c2 = (classes[i] * 2) + 6 * next[i + 1]
+                val c2 = (classes[i] * 2) + 6 * next[i + 1]+1
                 next[i] = c1
                 next[i + 1] = c2
 
