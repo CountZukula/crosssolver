@@ -7,7 +7,7 @@ import java.util.*
  */
 class CounterBasic(size: Int) : Counter(size, 18) {
 
-    /**
+    /t **
      * Increase the counter.
      *
      * @return true if the increase happened, false if we hit the ceiling.
