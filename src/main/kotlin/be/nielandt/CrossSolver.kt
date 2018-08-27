@@ -75,12 +75,12 @@ fun main(args: Array<String>) {
     val usedModel = EdgeModel(moves)
     println(usedModel)
 
-//    val baseSolve = CrossSolverBase().solveCrossesTimed(scrambledModel)
+//    val baseSolve = CrossSolverBase().solveCrossesTimed(usedModel)
 //    CrossSolver.printResults(baseSolve)
 
     val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolve)
-
+//
     val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolveSkip)
 

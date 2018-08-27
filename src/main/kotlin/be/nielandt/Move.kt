@@ -48,10 +48,14 @@ fun decodeMove(i: Int): String {
         L2 -> "L2"
         R2 -> "R2"
         else -> {
-            println("i = ${i}")
+            println("i = $i")
             throw IllegalArgumentException()
         }
     }
+}
+
+fun classOf(move: Int): Int {
+    return (move%6) / 2
 }
 
 fun parseMoves(s: String): List<Int> {
