@@ -14,10 +14,10 @@ import java.util.*
  * - [0,2,0]
  * - ...
  */
-class VariableCounter(private val baseSizes: IntArray) : Iterator<Array<Int>> {
+class VariableCounter(internal val baseSizes: IntArray) : Iterator<IntArray> {
 
     // init the counter with 0's, we only have a maximum as our basesize
-    val counter = Array(baseSizes.size) {
+    val counter = IntArray(baseSizes.size) {
         when (it) {
             baseSizes.size - 1 -> -1
             else -> 0
@@ -33,13 +33,13 @@ class VariableCounter(private val baseSizes: IntArray) : Iterator<Array<Int>> {
         return false
     }
 
-    override fun next(): Array<Int> {
+    override fun next(): IntArray {
         for (i in this.counter.size - 1 downTo 0) {
             this.counter[i]++
             if (this.counter[i] == baseSizes[i]) {
                 this.counter[i] = 0
             } else {
-                return counter.copyOf()
+                break
             }
         }
         return counter.copyOf()

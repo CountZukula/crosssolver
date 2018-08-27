@@ -48,7 +48,7 @@ fun decodeMove(i: Int): String {
         L2 -> "L2"
         R2 -> "R2"
         else -> {
-            println("i = ${i}")
+            println("i = $i")
             throw IllegalArgumentException()
         }
     }
