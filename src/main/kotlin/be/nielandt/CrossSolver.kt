@@ -84,6 +84,8 @@ fun main(args: Array<String>) {
     val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolveSkip)
 
+    val solveCrossesTimed = CrossSolverIterator().solveCrossesTimed(usedModel)
+    CrossSolver.printResults(solveCrossesTimed)
 //    val allCrossMoveCountUpgradedSkip = allCrossMoveCountUpgradedSkip(scrambledModel)
 //    allCrossMoveCountUpgradedSkip.forEach { color, moves ->
 //        println("skip upgrade cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
