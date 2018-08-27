@@ -1,6 +1,5 @@
 package be.nielandt
 
-import be.nielandt.counter.CounterBuffer
 import be.nielandt.counter.CounterSkip
 
 /**
