@@ -7,9 +7,9 @@ open abstract class CrossSolver {
     /**
      * Solve all crosses, look for a minimal set of moves for each color's cross.
      */
-    abstract fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Int>>
+    abstract fun solveCrosses(edgeModel: EdgeModel): Map<Int, IntArray>
 
-    fun solveCrossesTimed(edgeModel: EdgeModel): Map<Int, List<Int>> {
+    fun solveCrossesTimed(edgeModel: EdgeModel): Map<Int, IntArray> {
         val now = Instant.now()
         val solveCrosses = solveCrosses(edgeModel)
         val between = Duration.between(now, Instant.now())
@@ -18,7 +18,7 @@ open abstract class CrossSolver {
     }
 
     companion object {
-        fun printResults(results: Map<Int, List<Int>>) {
+        fun printResults(results: Map<Int, IntArray>) {
             println("results: ")
             results.forEach { color, moveList ->
                 println("> color ${colorLetter(color)}, moves (${moveList.size}) ${moveList.map { it -> decodeMove(it) }}")

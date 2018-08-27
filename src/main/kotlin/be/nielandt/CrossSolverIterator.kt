@@ -1,8 +1,8 @@
 package be.nielandt
 
-import be.nielandt.counter.CounterTieredFactory
+import be.nielandt.iterator.ValidClassMoveIterator
 
-class CrossSolverBase : CrossSolver() {
+class CrossSolverIterator : CrossSolver() {
     /**
      * Solve the minimal cross for all colors.
      */
@@ -11,30 +11,38 @@ class CrossSolverBase : CrossSolver() {
 
         for (moveCount in 1..8) {
             // build a counter of moveCount big
-            println("allCrossMoveCount basic doing $moveCount")
-            val counter = CounterTieredFactory.create(moveCount)
+            println("crossSolverIterator doing $moveCount")
+            val iterator = ValidClassMoveIterator(moveCount)
 
             // count up, each state of the counter corresponds to a combination of moves
-            do {
+            while (iterator.hasNext()) {
+                val moves = iterator.next()
                 // execute the moves
-                val afterMoves = edgeModel.doMoves(counter.counter)
+                val afterMoves = edgeModel.doMoves(moves.toList())
                 // check crosses that have not been found yet
                 (0..5).forEach { color ->
                     if (!moveCounts.containsKey(color)) {
                         val crossSolved = afterMoves.crossSolved(color)
                         if (crossSolved) {
-                            moveCounts[color] = counter.counter.copyOf()
+                            moveCounts[color] = moves
                         }
                     }
                 }
-
                 if (moveCounts.keys.size == 6) {
                     return@solveCrosses moveCounts
                 }
-
-            } while (counter.increase())
+            }
         }
         return moveCounts
     }
 
+}
+
+fun main(args: Array<String>) {
+    val start = EdgeModel().doMoves(randomMoves(20))
+    val solver = CrossSolverIterator()
+    val solveCrossesTimed = solver.solveCrossesTimed(start)
+    solveCrossesTimed.forEach { t, u ->
+        println("t $t u ${u.map { decodeMove(it) }}")
+    }
 }

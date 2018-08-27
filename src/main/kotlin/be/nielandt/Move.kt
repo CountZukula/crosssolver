@@ -91,9 +91,9 @@ fun parseMove(s: String): Int {
     }
 }
 
-fun randomMoves(amount: Int): Array<Int> {
+fun randomMoves(amount: Int): IntArray {
     val rgen = Random()
-    return Array(amount) {
+    return IntArray(amount) {
         rgen.nextInt(18)
     }
 }

@@ -7,14 +7,14 @@ import be.nielandt.classOf
  */
 class CounterBuffer(size: Int) : Counter(size, 18) {
 
-    val buffer = mutableListOf<Array<Int>>()
+    val buffer = mutableListOf<IntArray>()
 
     init {
         // initialise the buffer of valid counters
         val counterBasic = CounterBasic(size)
         do {
             if (counterBasic.isValid()) {
-                buffer.add(counterBasic.counter)
+                buffer.add(counterBasic.counter.copyOf())
             }
         } while (counterBasic.increase())
         println("Init of counter buffer, ${buffer.size} valid combos")

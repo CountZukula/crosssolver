@@ -61,3 +61,12 @@ class CounterBasic(size: Int) : Counter(size, 18) {
     }
 
 }
+
+fun main(args: Array<String>) {
+    val counterBasic = CounterBasic(7)
+    var count = 0
+    while(counterBasic.increase())
+        count++
+    println("count = ${count}")
+
+}

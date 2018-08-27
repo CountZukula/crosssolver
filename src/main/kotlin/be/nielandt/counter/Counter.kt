@@ -12,7 +12,7 @@ open abstract class Counter(size: Int, val base: Int = 18) {
     /**
      * Empty counter, all 0 values for each digit.
      */
-    var counter: Array<Int> = Array(size) { 0 }
+    var counter: IntArray = IntArray(size) { 0 }
 
     /**
      *  The last (highest significance) index that overflowed and has been changed in the counter. Could be null, if it never overflowed.

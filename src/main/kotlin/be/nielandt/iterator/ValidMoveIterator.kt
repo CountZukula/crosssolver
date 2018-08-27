@@ -19,7 +19,7 @@ class ValidMoveIterator(val classes: List<Int>) : Iterator<IntArray> {
         // create the variable counter: if a class is 'alone', it can iterate over all 6 values. otherwise, each part can iterate over 3
         val intArray = IntArray(classes.size)
         var i = 0
-        while (i < classes.size - 1) {
+        while (i < classes.size) {
             if (i < classes.size - 1 && classes[i] == classes[i + 1]) {
                 intArray[i] = 3
                 intArray[i + 1] = 3
@@ -36,12 +36,11 @@ class ValidMoveIterator(val classes: List<Int>) : Iterator<IntArray> {
 
     override fun next(): IntArray {
         val next = this.expansionCounter.next()
-        println("Expansioncounter next = ${Arrays.toString(next)}")
         // translate this state into a list of moves
         var i = 0
         while (i < next.size) {
             // process the double situation
-            if (classes[i] == classes[i + 1]) {
+            if (i < classes.size-1 && classes[i] == classes[i + 1]) {
                 // so, we're in the same state, the first counter will get the 'low' value, the second the 'high' value
                 // for class FB, that would be F and B respectively
                 // class 0 (FB) has to expand to 0,6,12 (F,F_F2) and 1,7,13 (B,B_,B2) respectively

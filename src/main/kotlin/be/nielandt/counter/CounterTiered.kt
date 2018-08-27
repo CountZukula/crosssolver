@@ -9,7 +9,7 @@ import be.nielandt.decodeMove
  */
 class CounterTiered : Counter(8) {
 
-    private val moveIterator: Iterator<Array<Int>> = listOf<Array<Int>>().iterator()
+    private val moveIterator: Iterator<IntArray> = listOf<IntArray>().iterator()
 
     override fun increase(): Boolean {
         if (!this.moveIterator.hasNext())
@@ -22,10 +22,10 @@ class CounterTiered : Counter(8) {
         return !this.moveIterator.hasNext()
     }
 
-    private class MoveIterator(val classes: List<List<Int>>) : Iterator<Array<Int>> {
+    private class MoveIterator(val classes: List<IntArray>) : Iterator<IntArray> {
 
         var currentClassIndex = 0
-        lateinit var currentMoves: Iterator<Array<Int>>
+        lateinit var currentMoves: Iterator<IntArray>
 
 
         init {
@@ -34,11 +34,11 @@ class CounterTiered : Counter(8) {
         }
 
         private fun doClass(index: Int) {
-            val fillIn = fillIn(0, classes[index], Array(classes.size) { 0 })
+            val fillIn = fillIn(0, classes[index], IntArray(classes.size) { 0 })
             currentMoves = fillIn.toList().iterator()
         }
 
-        override fun next(): Array<Int> {
+        override fun next(): IntArray {
             val next = currentMoves.next()
             if (!currentMoves.hasNext()) {
                 nextClass()
@@ -97,8 +97,8 @@ const val D2 = 15
 const val L2 = 16
 const val R2 = 17
  */
-fun fillIn(index: Int, classes: List<Int>, moveList: Array<Int>): List<Array<Int>> {
-    val result = mutableListOf<Array<Int>>()
+fun fillIn(index: Int, classes: IntArray, moveList: IntArray): List<IntArray> {
+    val result = mutableListOf<IntArray>()
 
     // if the movelist is complete, finish it
     if (index == classes.size) {

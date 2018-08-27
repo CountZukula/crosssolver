@@ -57,8 +57,8 @@ class EdgeModel {
 
     constructor(randomMoves: Int) {
         val edgeModel = EdgeModel()
-        val r: Array<Int> = randomMoves(randomMoves)
-        val doMoves = edgeModel.doMoves(r)
+        val r: IntArray = randomMoves(randomMoves)
+        val doMoves = edgeModel.doMoves(r.toList())
         this.model = doMoves.model
     }
 
@@ -171,14 +171,6 @@ class EdgeModel {
         return trimMargin
     }
 
-    fun doMoves(f: Array<Int>) : EdgeModel {
-        var edgeModel = this
-        f.forEach {
-            edgeModel = edgeModel.doMove(it)
-        }
-        return edgeModel
-    }
-
     fun doMoves(f: Collection<Int>): EdgeModel {
         var edgeModel = this
         f.forEach {
@@ -187,8 +179,12 @@ class EdgeModel {
         return edgeModel
     }
 
-    fun doMoves(vararg f: Int): EdgeModel {
-        return this.doMoves(f.toList())
+    fun doMoves(f: IntArray): EdgeModel {
+        var edgeModel = this
+        f.forEach {
+            edgeModel = edgeModel.doMove(it)
+        }
+        return edgeModel
     }
 
     /**

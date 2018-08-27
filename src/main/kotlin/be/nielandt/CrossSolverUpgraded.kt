@@ -7,8 +7,8 @@ import be.nielandt.counter.CounterBasic
  */
 class CrossSolverUpgraded : CrossSolver() {
 
-    override fun solveCrosses(edgeModel: EdgeModel): Map<Int, List<Int>> {
-        val moveCounts = mutableMapOf<Int, List<Int>>()
+    override fun solveCrosses(edgeModel: EdgeModel): Map<Int, IntArray> {
+        val moveCounts = mutableMapOf<Int, IntArray>()
         for (moveCount in 1..8) {
             println("all cross move count upgrade doing $moveCount")
             // build a counter of moveCount big
@@ -25,7 +25,7 @@ class CrossSolverUpgraded : CrossSolver() {
                         val crossSolved = next.crossSolved(color)
                         if (crossSolved) {
                             // what is the move combination we're looking at?
-                            moveCounts[color] = counter.counter.toList()
+                            moveCounts[color] = counter.counter.copyOf()
                         }
                     }
                 }
