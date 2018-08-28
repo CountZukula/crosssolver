@@ -36,35 +36,6 @@ open abstract class CrossSolver {
  */
 fun main(args: Array<String>) {
 
-//    val u2 = Move.U2
-//    val doMove = edgeModel.doMove(Move.U2)
-//    println(u2)
-//    println(doMove)
-//    println("doMove.whiteCrossSolved() = ${doMove.whiteCrossSolved()}")
-
-//    val message = EdgeModel().doMoves(Move.R, Move.U, Move.R_)
-//    println(message)
-//    println("message.whiteCrossSolved() = ${message.whiteCrossSolved()}")
-//
-//    val doMoves = EdgeModel().doMoves(Move.random(15))
-//    println("random 15 moves = ${doMoves}")
-//    println("doMoves.whiteCrossSolved() = ${doMoves.whiteCrossSolved()}")
-
-
-//    val begin = Instant.now()
-//    var i: Long = 0
-//    while (Duration.between(begin, Instant.now()) < Duration.ofMinutes(1)) {
-//        EdgeModel().doMoves(Move.random(15))
-//        i++
-//    }
-//    println("i = ${i}")
-//
-//    val counter = Counter(4, 3)
-//    while (counter.increase()) {
-//        println("counter = ${counter}")
-//    }
-
-
     // do a fixed scramble for testing purposes
     // noskip Move.enum 30s, skip Move.enum 32s
 //    val fixedMoves = parseMoves("L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R")
