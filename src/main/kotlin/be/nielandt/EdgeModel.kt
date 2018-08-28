@@ -37,6 +37,7 @@ class EdgeModel {
         return EdgeModel.withModel(model.model)
     }
 
+
     /**
      * Do a single move and calculate the resulting edge model.
      */
@@ -90,7 +91,6 @@ class EdgeModel {
             copyOf[s[5]] = model[s[7]]
             copyOf[s[7]] = model[s[5]]
         }
-
         when (move) {
             F -> nonPrime(F_indices)
             F_ -> prime(F_indices)
