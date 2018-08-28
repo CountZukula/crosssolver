@@ -35,34 +35,25 @@ open abstract class CrossSolver {
  * - new version, optimised now avoid recalc:       47s, 21s, 34s, 14s,  (401592291, 147023415, 67382002, 67381995)
  */
 fun main(args: Array<String>) {
+    /**
+     * choose your moves, fixed or random?
+     */
+//    val moves = parseMoves("U2 F2 U2 D R2 F2 R2 B2 U' D2 L B L2 U2 L B' U L R B".replace('\'', '_'))
+    val moves = randomMoves(10)
 
-    // do a fixed scramble for testing purposes
-    // noskip Move.enum 30s, skip Move.enum 32s
-//    val fixedMoves = parseMoves("L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R")
-    val moveString: String = "U2 F2 U2 D R2 F2 R2 B2 U' D2 L B L2 U2 L B' U L R B".replace('\'', '_')
-    val s = "L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R"
-
-    val fixedMoves = parseMoves(moveString)
-    println("fixedMoves = ${fixedMoves}")
-    // scramble random
-    val randomMoves = randomMoves(20)
-
-    val moves = fixedMoves
     println("Scramble: ${moves.map { decodeMove(it) }}")
-
 
     val usedModel = EdgeModel.withMoves(moves)
     println(usedModel)
 
-
-    val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(usedModel)
-    CrossSolver.printResults(upgradedSolve)
-
-    val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
-    CrossSolver.printResults(upgradedSolveSkip)
-
-    val solveCrossesTimed = CrossSolverIterator().solveCrossesTimed(usedModel)
-    CrossSolver.printResults(solveCrossesTimed)
+//    val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(usedModel)
+//    CrossSolver.printResults(upgradedSolve)
+//
+//    val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
+//    CrossSolver.printResults(upgradedSolveSkip)
+//
+//    val solveCrossesTimed = CrossSolverIterator().solveCrossesTimed(usedModel)
+//    CrossSolver.printResults(solveCrossesTimed)
 
     val s3 = CrossSolverIteratorUpgraded().solveCrossesTimed(usedModel)
     CrossSolver.printResults(s3)

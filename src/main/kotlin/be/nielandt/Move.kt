@@ -26,7 +26,7 @@ const val L2 = 16
 const val R2 = 17
 
 fun decodeMove(i: Int): String {
-    return when(i) {
+    return when (i) {
         F -> "F"
         B -> "B"
         U -> "U"
@@ -55,7 +55,7 @@ fun decodeMove(i: Int): String {
 }
 
 fun classOf(move: Int): Int {
-    return (move%6) / 2
+    return (move % 6) / 2
 }
 
 fun parseMoves(s: String): IntArray {
@@ -91,10 +91,46 @@ fun parseMove(s: String): Int {
     }
 }
 
+/**
+ * Get a proper scramble set of moves. Disallow the obvious symmetries.
+ */
 fun randomMoves(amount: Int): IntArray {
     val rgen = Random()
-    return IntArray(amount) {
-        rgen.nextInt(18)
+    val result = IntArray(amount)
+    for (i in 0 until result.size) {
+        // create valid options for the next one
+        val options = mutableListOf<Int>()
+        if (i == 0) {
+            // all options
+            options.addAll(0..17)
+        }
+        // if there's two before us, we can't add a third of the same class
+        else if (i > 1 && classOf(result[i - 1]) == classOf(result[i - 2])) {
+            options.addAll(
+                    (0..17).filter { classOf(it) != classOf(result[i - 1]) }
+            )
+        } else {
+            // all options except the previous one
+            // also disallow same-face solutions
+            options.addAll(
+                    (0..17)
+                            // can't be the same face move
+                            .filter {
+                                it % 6 != result[i - 1] % 6
+                            }
+            )
+        }
+        result[i] = options[rgen.nextInt(options.size)]
     }
+    return result
 }
+
+fun main(args: Array<String>) {
+    printMoves(randomMoves(50))
+}
+
+fun printMoves(moves: IntArray) {
+    println(moves.map { decodeMove(it) }.joinToString(","))
+}
+
 
