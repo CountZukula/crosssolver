@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
      * choose your moves, fixed or random?
      */
 //    val moves = parseMoves("U2 F2 U2 D R2 F2 R2 B2 U' D2 L B L2 U2 L B' U L R B".replace('\'', '_'))
-    val moves = randomMoves(10)
+    val moves = randomMoves(20)
 
     println("Scramble: ${moves.map { decodeMove(it) }}")
 
