@@ -45,7 +45,7 @@ class CrossSolverIterator : CrossSolver() {
 }
 
 fun main(args: Array<String>) {
-    val start = EdgeModel().doMoves(randomMoves(20))
+    val start = EdgeModel.solved().doMoves(randomMoves(20))
     val solver = CrossSolverIterator()
     val solveCrossesTimed = solver.solveCrossesTimed(start)
     solveCrossesTimed.forEach { t, u ->

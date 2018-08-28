@@ -30,7 +30,8 @@ open abstract class CrossSolver {
 /**
  * Let's look for symmetries.
  *
- * base times: 72s, 29s, 61s
+ * - no changes: base times:                        72s, 29s, 61s
+ * - changed list<int> in edgemodel to intarray:    51s, 21s, 35s
  */
 fun main(args: Array<String>) {
 
@@ -78,7 +79,7 @@ fun main(args: Array<String>) {
     println("Scramble: ${moves.map { decodeMove(it) }}")
 
 
-    val usedModel = EdgeModel(moves)
+    val usedModel = EdgeModel.withMoves(moves)
     println(usedModel)
 
 //    val baseSolve = CrossSolverBase().solveCrossesTimed(usedModel)

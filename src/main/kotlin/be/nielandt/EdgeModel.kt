@@ -26,50 +26,15 @@ package be.nielandt
 
 class EdgeModel {
 
-    val model: Array<Int>
+    lateinit var model: IntArray
 
-    private val F_indices = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
-    private val B_indices = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
-    private val L_indices = intArrayOf(3, 23, 9, 19, 12, 13, 14, 15)
-    private val U_indices = intArrayOf(16, 17, 18, 19, 0, 12, 8, 4)
-    private val D_indices = intArrayOf(2, 6, 10, 14, 20, 21, 22, 23)
-    private val R_indices = intArrayOf(4, 5, 6, 7, 1, 17, 11, 21)
+    /**
+     * Create an edgemodel through the companion object.
+     */
+    private constructor()
 
-    constructor() {
-        // do a sanity check
-        val entries = mutableListOf(F_indices, B_indices, L_indices, U_indices, D_indices, R_indices).flatMap { it.asList() }.groupBy { it }.entries
-//        println("entries = ${entries}")
-        if (entries.any {
-                    it.value.size != 2
-                }) {
-            throw RuntimeException("each index should occur exactly twice in the arrays")
-        }
-
-        model = arrayOf(
-                GREEN, GREEN, GREEN, GREEN,
-                RED, RED, RED, RED,
-                BLUE, BLUE, BLUE, BLUE,
-                ORANGE, ORANGE, ORANGE, ORANGE,
-                WHITE, WHITE, WHITE, WHITE,
-                YELLOW, YELLOW, YELLOW, YELLOW
-        )
-    }
-
-    constructor(randomMoves: Int) {
-        val edgeModel = EdgeModel()
-        val r: IntArray = randomMoves(randomMoves)
-        val doMoves = edgeModel.doMoves(r.toList())
-        this.model = doMoves.model
-    }
-
-    constructor(model: Array<Int>) {
-        this.model = model
-    }
-
-    constructor(moves: List<Int>) {
-        val edgeModel = EdgeModel()
-        val newModel = edgeModel.doMoves(moves)
-        this.model = newModel.model
+    fun copyOf(model: EdgeModel): EdgeModel {
+        return EdgeModel.withModel(model.model)
     }
 
     /**
@@ -146,7 +111,7 @@ class EdgeModel {
             D_ -> prime(D_indices)
             D2 -> double(D_indices)
         }
-        return EdgeModel(copyOf)
+        return EdgeModel.withModel(copyOf)
     }
 
     /**
@@ -219,6 +184,63 @@ class EdgeModel {
             else -> {
                 throw RuntimeException()
             }
+        }
+    }
+
+    companion object {
+
+        private val F_indices = intArrayOf(13, 18, 7, 20, 3, 0, 1, 2)
+        private val B_indices = intArrayOf(8, 9, 10, 11, 16, 15, 22, 5)
+        private val L_indices = intArrayOf(3, 23, 9, 19, 12, 13, 14, 15)
+        private val U_indices = intArrayOf(16, 17, 18, 19, 0, 12, 8, 4)
+        private val D_indices = intArrayOf(2, 6, 10, 14, 20, 21, 22, 23)
+        private val R_indices = intArrayOf(4, 5, 6, 7, 1, 17, 11, 21)
+
+        fun solved(): EdgeModel {
+            val edgeModel = EdgeModel()
+            // do a sanity check
+            val entries = mutableListOf(F_indices, B_indices, L_indices, U_indices, D_indices, R_indices).flatMap { it.asList() }.groupBy { it }.entries
+//        println("entries = ${entries}")
+            if (entries.any {
+                        it.value.size != 2
+                    }) {
+                throw RuntimeException("each index should occur exactly twice in the arrays")
+            }
+
+            val model = intArrayOf(
+                    GREEN, GREEN, GREEN, GREEN,
+                    RED, RED, RED, RED,
+                    BLUE, BLUE, BLUE, BLUE,
+                    ORANGE, ORANGE, ORANGE, ORANGE,
+                    WHITE, WHITE, WHITE, WHITE,
+                    YELLOW, YELLOW, YELLOW, YELLOW
+            )
+            edgeModel.model = model
+            return edgeModel
+        }
+
+        fun withRandomMoves(randomMoves: Int): EdgeModel {
+            val edgeModel = EdgeModel()
+            val r: IntArray = randomMoves(randomMoves)
+            val doMoves = edgeModel.doMoves(r.toList())
+            edgeModel.model = doMoves.model
+            return edgeModel
+        }
+
+        fun withModel(model: IntArray): EdgeModel {
+            val edgeModel = EdgeModel()
+            edgeModel.model = model
+            return edgeModel
+        }
+
+        /**
+         * Pass a list of moves and do them on a solved edgemodel.
+         */
+        fun withMoves(moves: IntArray): EdgeModel {
+            val edgeModel = EdgeModel.solved()
+            val newModel = edgeModel.doMoves(moves)
+            edgeModel.model = newModel.model
+            return edgeModel
         }
     }
 }

@@ -7,7 +7,7 @@ class EdgeModelTest {
 
     @Test
     fun testSingleMove() {
-        val edgeModel = EdgeModel()
+        val edgeModel = EdgeModel.solved()
         (0..5).forEach { color ->
             assertTrue(edgeModel.crossSolved(color))
         }
@@ -15,7 +15,7 @@ class EdgeModelTest {
 
     @Test
     fun testSingleMoves() {
-        val edgeModel = EdgeModel()
+        val edgeModel = EdgeModel.solved()
         println(edgeModel)
         val final = edgeModel.doMove(F)
         println(final)
