@@ -29,6 +29,8 @@ open abstract class CrossSolver {
 
 /**
  * Let's look for symmetries.
+ *
+ * base times: 72s, 29s, 61s
  */
 fun main(args: Array<String>) {
 
