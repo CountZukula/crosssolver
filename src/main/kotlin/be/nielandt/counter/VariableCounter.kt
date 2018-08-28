@@ -5,14 +5,14 @@ import java.util.*
 /**
  * The variable counter has irregular base size for each digit.
  *
- * basesize: [1,2,1]
+ * basesize: [1,3,2]
  * iterates:
  * - [0,0,0]
  * - [0,0,1]
  * - [0,1,0]
  * - [0,1,1]
  * - [0,2,0]
- * - ...
+ * - [0,2,1]
  */
 class VariableCounter(internal val baseSizes: IntArray) : Iterator<IntArray> {
 

@@ -63,7 +63,11 @@ fun main(args: Array<String>) {
 
     // do a fixed scramble for testing purposes
     // noskip Move.enum 30s, skip Move.enum 32s
-    val fixedMoves = parseMoves("L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R")
+//    val fixedMoves = parseMoves("L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R")
+    val moveString: String = "U2 F2 U2 D R2 F2 R2 B2 U' D2 L B L2 U2 L B' U L R B".replace('\'', '_')
+    val s = "L_, D, U, L2, F, D, B, D, U2, D, B_, F2, D2, U_, R, D2, R_, L, B_, R"
+
+    val fixedMoves = parseMoves(moveString)
     println("fixedMoves = ${fixedMoves}")
     // scramble random
     val randomMoves = randomMoves(20)
