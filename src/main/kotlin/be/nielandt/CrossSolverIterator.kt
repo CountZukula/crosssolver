@@ -8,6 +8,7 @@ class CrossSolverIterator : CrossSolver() {
      */
     override fun solveCrosses(edgeModel: EdgeModel): Map<Int, IntArray> {
         val moveCounts = mutableMapOf<Int, IntArray>()
+        var iteratorCount = 0
 
         for (moveCount in 1..8) {
             // build a counter of moveCount big
@@ -17,6 +18,7 @@ class CrossSolverIterator : CrossSolver() {
             // count up, each state of the counter corresponds to a combination of moves
             while (iterator.hasNext()) {
                 val moves = iterator.next()
+                iteratorCount++
                 // execute the moves
                 val afterMoves = edgeModel.doMoves(moves.toList())
                 // check crosses that have not been found yet
@@ -29,10 +31,14 @@ class CrossSolverIterator : CrossSolver() {
                     }
                 }
                 if (moveCounts.keys.size == 6) {
+                    println("iteratorCount = ${iteratorCount}")
                     return@solveCrosses moveCounts
                 }
             }
         }
+
+        println("iteratorCount = ${iteratorCount}")
+
         return moveCounts
     }
 
