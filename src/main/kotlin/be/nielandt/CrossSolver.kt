@@ -32,6 +32,7 @@ open abstract class CrossSolver {
  *
  * - no changes: base times:                        72s, 29s, 61s
  * - changed list<int> in edgemodel to intarray:    51s, 21s, 35s
+ * - new version, optimised now avoid recalc:       47s, 21s, 34s, 14s,  (401592291, 147023415, 67382002, 67381995)
  */
 fun main(args: Array<String>) {
 
@@ -82,20 +83,24 @@ fun main(args: Array<String>) {
     val usedModel = EdgeModel.withMoves(moves)
     println(usedModel)
 
-//    val baseSolve = CrossSolverBase().solveCrossesTimed(usedModel)
-//    CrossSolver.printResults(baseSolve)
 
     val upgradedSolve = CrossSolverUpgraded().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolve)
-//
+
     val upgradedSolveSkip = CrossSolverUpgradedSkip().solveCrossesTimed(usedModel)
     CrossSolver.printResults(upgradedSolveSkip)
 
     val solveCrossesTimed = CrossSolverIterator().solveCrossesTimed(usedModel)
     CrossSolver.printResults(solveCrossesTimed)
+
+    val s3 = CrossSolverIteratorUpgraded().solveCrossesTimed(usedModel)
+    CrossSolver.printResults(s3)
+
 //    val allCrossMoveCountUpgradedSkip = allCrossMoveCountUpgradedSkip(scrambledModel)
 //    allCrossMoveCountUpgradedSkip.forEach { color, moves ->
 //        println("skip upgrade cross for color: ${color} in ${moves.size}: ${moves.joinToString(" ")}")
 //    }
+//    val baseSolve = CrossSolverBase().solveCrossesTimed(usedModel)
+//    CrossSolver.printResults(baseSolve)
 }
 

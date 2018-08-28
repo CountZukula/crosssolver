@@ -1,7 +1,5 @@
 package be.nielandt.iterator
 
-import be.nielandt.decodeMove
-
 class ValidClassMoveIterator(val size: Int) : Iterator<IntArray> {
 
     // current level of the iterator
